@@ -1,19 +1,19 @@
 package org.ibs.cds.gode.util;
 
 
-import org.ibs.cds.gode.entity.TypicalEntity;
-import org.ibs.cds.gode.pagination.PageContext;
-import org.ibs.cds.gode.pagination.PagedData;
-import org.ibs.cds.gode.pagination.ResponsePageContext;
-import org.ibs.cds.gode.pagination.Sortable;
+import org.ibs.cds.gode.entity.cache.CacheEntity;
+import org.ibs.cds.gode.entity.type.TypicalEntity;
+import org.ibs.cds.gode.pagination.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.util.CollectionUtils;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class PageUtils {
 
@@ -29,7 +29,7 @@ public class PageUtils {
         Set<Sortable> sortOrders = new HashSet<>();
         page.getSort().forEach(order->sortOrders.add(fromSort(order)));
         ctx.setSortOrder(sortOrders);
-        pagedData.setContext(ctx);
+        pagedData.setContext(new QueryContext(ctx, null));
         return pagedData;
     }
 
@@ -43,6 +43,10 @@ public class PageUtils {
 
     public static <T extends TypicalEntity<?>> PagedData<T> getData(Function<PageRequest, Page<T>> function, PageContext ctx) {
         return fromPage(function.apply(toBaseRequest(ctx)));
+    }
+
+    public static <T extends TypicalEntity<?>,R extends TypicalEntity<?>> PagedData<T> transform(PagedData<T> data, Function<T,R> transformer) {
+        return new PagedData(data.stream().map(transformer).collect(Collectors.toList()), data.getContext());
     }
 
     public static <T extends TypicalEntity<?>,O> PagedData<O> getData(Function<PageRequest, Page<T>> function, PageContext ctx, Function<T,O> map) {
@@ -82,5 +86,20 @@ public class PageUtils {
 
     public static <T> PagedData<T> emptyPage(){
         return new PagedData<>();
+    }
+
+    public static <T extends CacheEntity<?>> PagedData<T> getData(Iterable<T> data, long totalCount, PageContext context){
+        PagedData<T> page = new PagedData<>();
+        int pageSize = context.getPageSize();
+        int pageNo = context.getPageNumber();
+        List<T> listOfData = StreamUtils.from(data, (pageNo - 1) * pageSize, pageSize).collect(Collectors.toList());
+        page.setData(listOfData);
+        ResponsePageContext pageContext = new ResponsePageContext(context);
+        pageContext.setTotalCount(totalCount);
+        pageContext.setTotalPages(totalCount/pageSize);
+        pageContext.setNext(pageNo*pageSize < totalCount);
+        pageContext.setPrevious(pageNo-1 > 0 && (pageNo-1)*pageSize < totalCount);
+        page.setContext(new QueryContext(pageContext, null));
+        return page;
     }
 }

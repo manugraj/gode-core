@@ -1,41 +1,22 @@
 package org.ibs.cds.gode.pagination;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.List;
 import java.util.stream.Stream;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class PagedData<T> {
 
 	private List<T> data;
-	private ResponsePageContext context;
-
-	/**
-	 * @return the data
-	 */
-	public List<T> getData() {
-		return data;
-	}
-	/**
-	 * @param data the data to set
-	 */
-	public void setData(List<T> data) {
-		this.data = data;
-	}
-	/**
-	 * @return the context
-	 */
-	public ResponsePageContext getContext() {
-		return context;
-	}
-	/**
-	 * @param context the context to set
-	 */
-	public void setContext(ResponsePageContext context) {
-		this.context = context;
-	}
-
+	private QueryContext context;
 
 	@JsonIgnore
 	public Stream<T> stream(){

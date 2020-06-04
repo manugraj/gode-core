@@ -1,15 +1,18 @@
 package org.ibs.cds.gode.web.context;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import org.ibs.cds.gode.entity.operation.QueryContext;
+import org.ibs.cds.gode.exception.Error;
+import org.ibs.cds.gode.status.BinaryStatus;
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 public class ResponseContext implements WebMessageContext<String> {
 
-    private @Setter String handle;
-    private @Setter @Getter RequestContext requestContext;
+    private String handle;
+    private BinaryStatus status;
+    private Error error;
+    private RequestContext requestContext;
 
-    @Override
-    public String getHandle() {
-        return handle;
-    }
 }

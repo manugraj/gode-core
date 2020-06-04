@@ -2,23 +2,24 @@ package org.ibs.cds.gode.exception;
 
 public class GodeRuntimeException extends GodeException{
 
+
     public GodeRuntimeException(Error error) {
         super(error);
     }
 
-    public GodeRuntimeException(String message, Error error) {
-        super(message, error);
+    public GodeRuntimeException(Error error, String message) {
+        super(error, message);
     }
 
-    public GodeRuntimeException(String message, Throwable cause, Error error) {
-        super(message, cause, error);
+    public GodeRuntimeException(Error error, String message, Throwable cause) {
+        super(error, message, cause);
     }
 
-    public GodeRuntimeException(Throwable cause, Error error) {
-        super(cause, error);
+    public GodeRuntimeException(Error error, Throwable cause) {
+        super(error, cause);
     }
 
-    public GodeRuntimeException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace, Error error) {
-        super(message, cause, enableSuppression, writableStackTrace, error);
+    public GodeRuntimeException(Error error, String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+        super(error, message, cause, enableSuppression, writableStackTrace);
     }
 }

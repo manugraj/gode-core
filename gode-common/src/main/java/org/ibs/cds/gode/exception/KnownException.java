@@ -1,27 +1,112 @@
 package org.ibs.cds.gode.exception;
 
+import java.io.Serializable;
+
 public enum KnownException {
 
     FAILED_TO_START(1,"Failed to start app"){
-        @Override
-        public GodeStartupException exception(Throwable e,String details) {
-            return details == null ? new GodeStartupException(e, new Error(getCode(), getMessage()))
-                    : new GodeStartupException(getMessage(), e,new Error(getCode(), getMessage(), details));
+        private String message = getMessage();
+        public  GodeStartupException provide(Throwable e, Serializable details) {
+            return new GodeStartupException(new Error(getCode(), message, details), message, e);
         }
 
-        public GodeStartupException exception(String details) {
-            return details == null ? new GodeStartupException(new Error(getCode(), getMessage()))
-                    : new GodeStartupException(getMessage(),new Error(getCode(), getMessage(), details));
+        public GodeStartupException provide(Serializable details) {
+            return new GodeStartupException(new Error(getCode(), message, details), message);
         }
     },
     OBJECT_NOT_FOUND(2,"Specific object not found in system"){
+        private String message = getMessage();
         @Override
-        public GodeRuntimeException exception(Throwable e,String details) {
-            return details == null ? new GodeRuntimeException(e, new Error(getCode(), getMessage())) : new GodeRuntimeException(getMessage(), e,new Error(getCode(), getMessage(), details));
+        public GodeRuntimeException provide(Throwable e, Serializable details) {
+            return new GodeRuntimeException(new Error(getCode(), message, details),message, e);
         }
 
-        public GodeRuntimeException exception(String details) {
-            return details == null ? new GodeRuntimeException(new Error(getCode(), getMessage())) : new GodeRuntimeException(getMessage(),new Error(getCode(), getMessage(), details));
+        public GodeRuntimeException provide(Serializable details) {
+            return new GodeRuntimeException(new Error(getCode(), getMessage(), details),getMessage());
+        }
+    },
+    ENTITY_VALIDATIONS_FAILED(3, "Entity validation failed"){
+        private String message = getMessage();
+        @Override
+        public EntityValidationFailedException provide(Serializable details) {
+            return new EntityValidationFailedException(new Error(getCode(), getMessage(), details), message);
+        }
+
+        @Override
+        public EntityValidationFailedException provide(Throwable e, Serializable details) {
+            return new EntityValidationFailedException(new Error(getCode(), getMessage(), details),getMessage());
+        }
+    },
+    ASSERTION_FAILED(4, "Assertion failed"){
+        private String message = getMessage();
+        @Override
+        public GodeRuntimeException provide(Serializable details) {
+            return new GodeRuntimeException(new Error(getCode(), getMessage(), details), message);
+        }
+
+        @Override
+        public GodeRuntimeException provide(Throwable e, Serializable details) {
+            return new GodeRuntimeException(new Error(getCode(), getMessage(), details),getMessage());
+        }
+    },
+    SYSTEM_FAILURE(5, "System failure"){
+        private String message = getMessage();
+        @Override
+        public GodeRuntimeException provide(Serializable details) {
+            return new GodeRuntimeException(new Error(getCode(), getMessage(), details), message);
+        }
+
+        @Override
+        public GodeRuntimeException provide(Throwable e, Serializable details) {
+            return new GodeRuntimeException(new Error(getCode(), getMessage(), details),getMessage());
+        }
+    },
+    SAVE_FAILED(6, "Entity save failed"){
+        private String message = getMessage();
+        @Override
+        public EntityMutationOperationFaiednException provide(Serializable details) {
+            return new EntityMutationOperationFaiednException(new Error(getCode(), getMessage(), details), message);
+        }
+
+        @Override
+        public EntityMutationOperationFaiednException provide(Throwable e, Serializable details) {
+            return new EntityMutationOperationFaiednException(new Error(getCode(), getMessage(), details),getMessage());
+        }
+    },
+    QUERY_FAILED(7, "Entity query failed"){
+        private String message = getMessage();
+        @Override
+        public EntityQueryOperationFaiedException provide(Serializable details) {
+            return new EntityQueryOperationFaiedException(new Error(getCode(), getMessage(), details), message);
+        }
+
+        @Override
+        public EntityQueryOperationFaiedException provide(Throwable e, Serializable details) {
+            return new EntityQueryOperationFaiedException(new Error(getCode(), getMessage(), details),getMessage());
+        }
+    },
+    ENTITY_OPERATION_FAILED(8, "Entity process failed"){
+        private String message = getMessage();
+        @Override
+        public EntityOperationFailedException provide(Serializable details) {
+            return new EntityOperationFailedException(new Error(getCode(), getMessage(), details), message);
+        }
+
+        @Override
+        public EntityOperationFailedException provide(Throwable e, Serializable details) {
+            return new EntityOperationFailedException(new Error(getCode(), getMessage(), details),getMessage());
+        }
+    },
+    AUTHORISATION_EXCEPTION(8, "Authorisation failed"){
+        private String message = getMessage();
+        @Override
+        public AuthException provide(Serializable details) {
+            return new AuthException(new Error(getCode(), getMessage(), details), message);
+        }
+
+        @Override
+        public AuthException provide(Throwable e, Serializable details) {
+            return new AuthException(new Error(getCode(), getMessage(), details),getMessage());
         }
     };
 
@@ -41,12 +126,13 @@ public enum KnownException {
         this.message = message;
     }
 
-    public <T extends GodeException>  T exception(Throwable e){
-        return exception(e, null);
+    public <T extends GodeException>  T provide(Throwable e){
+        return provide(e, null);
     }
-    public <T extends GodeException>  T exception(){
-        return exception((String) null);
+    public <T extends GodeException>  T provide(){
+        return provide((String) null);
     }
-    public abstract <T extends GodeException>  T exception(String details);
-    public abstract <T extends GodeException>  T exception(Throwable e, String details);
+    public abstract <T extends GodeException,Details extends Serializable>  T provide(Details details);
+    public abstract <T extends GodeException,Details extends Serializable>  T provide(Throwable e, Details details);
+
 }

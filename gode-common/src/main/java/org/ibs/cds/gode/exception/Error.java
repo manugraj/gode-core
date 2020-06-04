@@ -2,12 +2,15 @@ package org.ibs.cds.gode.exception;
 
 import lombok.Data;
 
-public @Data class Error implements IError {
+import java.io.Serializable;
+
+public @Data class Error<Details extends Serializable> implements IError {
+
     private int code;
     private String message;
-    private String details;
+    private Details details;
 
-    public Error(int code, String message, String details) {
+    public Error(int code, String message, Details details) {
         this.code = code;
         this.message = message;
         this.details = details;

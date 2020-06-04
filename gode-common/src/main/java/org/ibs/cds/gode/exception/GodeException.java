@@ -8,22 +8,22 @@ public class GodeException extends RuntimeException {
         this.error = error;
     }
 
-    public GodeException(String message, Error error) {
+    public GodeException(Error error, String message) {
         super(message);
         this.error = error;
     }
 
-    public GodeException(String message, Throwable cause, Error error) {
+    public GodeException(Error error, String message, Throwable cause) {
         super(message, cause);
         this.error = error;
     }
 
-    public GodeException(Throwable cause, Error error) {
+    public GodeException(Error error, Throwable cause) {
         super(cause);
         this.error = error;
     }
 
-    public GodeException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace, Error error) {
+    public GodeException(Error error, String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
         this.error = error;
     }

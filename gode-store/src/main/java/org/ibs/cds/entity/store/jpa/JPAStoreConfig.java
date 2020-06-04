@@ -2,6 +2,7 @@ package org.ibs.cds.entity.store.jpa;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.ibs.cds.entity.store.condition.JPAStoreEnabler;
+import org.ibs.cds.gode.entity.store.StoreEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
@@ -10,6 +11,9 @@ import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
@@ -20,6 +24,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
+import java.io.Serializable;
 import java.util.Properties;
 
 @Configuration
@@ -77,5 +82,4 @@ public class JPAStoreConfig {
         properties.setProperty("hibernate.dialect", behaviour.getProperty("gode.datastore.jpa.dialect"));
         return properties;
     }
-
 }

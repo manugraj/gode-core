@@ -25,7 +25,7 @@ public class GodeAppEnvt extends GodeConstant{
         try {
             return godeAppEnvt.applicationContext.get().getBean(className);
         } catch (Exception e) {
-            throw KnownException.OBJECT_NOT_FOUND.exception(e);
+            throw KnownException.OBJECT_NOT_FOUND.provide(e);
         }
     }
 
@@ -35,7 +35,7 @@ public class GodeAppEnvt extends GodeConstant{
         try {
             return (T) godeAppEnvt.applicationContext.get().getBean(beanName);
         } catch (Exception e) {
-            throw KnownException.OBJECT_NOT_FOUND.exception(e);
+            throw KnownException.OBJECT_NOT_FOUND.provide(e);
         }
 
     }

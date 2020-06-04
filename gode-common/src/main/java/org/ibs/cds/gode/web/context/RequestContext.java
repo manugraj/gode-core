@@ -1,13 +1,12 @@
 package org.ibs.cds.gode.web.context;
 
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 public class RequestContext implements WebMessageContext<String> {
-
-    private @Setter String handle;
-
-    @Override
-    public String getHandle() {
-        return handle;
-    }
+    private String handle;
 }

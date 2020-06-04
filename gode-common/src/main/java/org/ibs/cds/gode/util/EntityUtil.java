@@ -1,7 +1,10 @@
 package org.ibs.cds.gode.util;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+
+import java.util.Collection;
 
 public class EntityUtil {
 
@@ -12,4 +15,9 @@ public class EntityUtil {
     public static String toString(Object object){
         return ToStringBuilder.reflectionToString(object);
     }
+
+    public static boolean equals(Object i, Object he) { return EqualsBuilder.reflectionEquals(i, he); }
+
+    public static boolean equals(Object i, Object he, Collection<String> excluded) { return EqualsBuilder.reflectionEquals(i, he, excluded); }
+
 }

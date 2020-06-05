@@ -1,16 +1,13 @@
 package org.ibs.cds.gode.entity.manager;
 
-import com.querydsl.core.types.Predicate;
 import lombok.extern.slf4j.Slf4j;
-import org.ibs.cds.gode.entity.type.TypicalEntity;
 import org.ibs.cds.gode.entity.generic.DataMap;
 import org.ibs.cds.gode.entity.manager.operation.StateEntityManagerOperation;
 import org.ibs.cds.gode.entity.repo.Repo;
+import org.ibs.cds.gode.entity.type.TypicalEntity;
 import org.ibs.cds.gode.entity.validation.ValidationStatus;
 import org.ibs.cds.gode.entity.view.EntityView;
 import org.ibs.cds.gode.exception.KnownException;
-import org.ibs.cds.gode.pagination.PageContext;
-import org.ibs.cds.gode.pagination.PagedData;
 import org.ibs.cds.gode.status.BinaryStatus;
 
 import java.io.Serializable;
@@ -54,7 +51,7 @@ public abstract class StateEntityManager<View extends EntityView<Id>,Entity exte
 
     public Entity beforeSave(Entity entity){
         log.debug(LOG_TEMPLATE, BFR_SAVE, entity);
-        invokeValidation(entity, this::validate);
+        invokeValidation(entity, this::validateEntity);
         return entity;
     }
 
@@ -65,7 +62,7 @@ public abstract class StateEntityManager<View extends EntityView<Id>,Entity exte
 
     @Override
     public View save(View view){
-        invokeValidation(view, this::validate);
+        invokeValidation(view, this::validateView);
         return transformEntity(afterSave(doSave(beforeSave(transformView(view)))));
     }
 
@@ -78,10 +75,14 @@ public abstract class StateEntityManager<View extends EntityView<Id>,Entity exte
     @Override
     public boolean deactivate(Id id){
         log.debug(LOG_TEMPLATE, DEACTIVATE, id);
-        return repo.deactivate(id);
+        return this.repo.findById(id).map(entity -> {
+            entity.setActive(false);
+            log.debug("Entity:{} found to deactivate", entity);
+            return this.repo.save(entity) != null;
+        }).orElse(false);
     }
 
-    protected <T extends TypicalEntity<?>>void invokeValidation(T entity, Function<T,ValidationStatus> validationFunction) {
+    protected <T extends TypicalEntity<?>> void invokeValidation(T entity, Function<T, ValidationStatus> validationFunction) {
         log.debug(LOG_TEMPLATE, VALIDATE,entity);
         if(!entity.isValidated()){
             ValidationStatus viewValidation = validationFunction.apply(entity);

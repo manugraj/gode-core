@@ -44,6 +44,6 @@ public class Logic {
     }
 
     public static <View extends EntityView<?>,Manager extends ViewEntityManagerOperation<View, ?>>  Function<View, Function<Manager, ValidationStatus>> validate(){
-        return view -> manager -> manager.validate(view);
+        return view -> manager -> manager.validateView(view);
     }
 }

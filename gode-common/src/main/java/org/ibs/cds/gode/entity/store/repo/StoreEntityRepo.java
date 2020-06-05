@@ -17,7 +17,6 @@ public interface StoreEntityRepo<Entity extends StoreEntity<Id>, Id extends Seri
     Stream<Entity> findByActive(boolean enabled);
     PagedData<Entity> findByActive(boolean enabled, PageContext pageable);
     Entity save(Entity entity);
-    boolean deactivate(Id id);
     PagedData<Entity> findAll(PageContext pageable);
 
     PagedData<Entity> findAll(Predicate predicate, PageContext context);

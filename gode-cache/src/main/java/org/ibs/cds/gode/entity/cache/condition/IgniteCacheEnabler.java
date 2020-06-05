@@ -8,7 +8,7 @@ public class IgniteCacheEnabler implements Condition {
 
     @Override
     public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
-        return Boolean.valueOf(context.getEnvironment().getProperty("cache.ignite.enabled"));
+        return Boolean.valueOf(context.getEnvironment().getProperty("gode.cache.ignite.enabled"));
     }
 
 }

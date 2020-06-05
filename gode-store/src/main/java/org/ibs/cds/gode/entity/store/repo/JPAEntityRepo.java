@@ -1,9 +1,8 @@
-package org.ibs.cds.entity.store.repo;
+package org.ibs.cds.gode.entity.store.repo;
 
 import com.querydsl.core.types.Predicate;
-import org.ibs.cds.entity.store.jpa.repo.JPASpringRepo;
+import org.ibs.cds.gode.entity.store.jpa.repo.JPASpringRepo;
 import org.ibs.cds.gode.entity.store.StoreEntity;
-import org.ibs.cds.gode.entity.store.repo.StoreEntityRepo;
 import org.ibs.cds.gode.pagination.PageContext;
 import org.ibs.cds.gode.pagination.PagedData;
 import org.ibs.cds.gode.util.PageUtils;

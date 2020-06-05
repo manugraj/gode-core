@@ -1,4 +1,4 @@
-package org.ibs.cds.entity.store.jpa.repo;
+package org.ibs.cds.gode.entity.store.jpa.repo;
 
 import org.ibs.cds.gode.entity.store.StoreEntity;
 import org.springframework.data.domain.Page;

@@ -1,6 +1,4 @@
-package org.ibs.cds.entity.store;
-
-import org.ibs.cds.gode.entity.store.IStoreType;
+package org.ibs.cds.gode.entity.store;
 
 public enum StoreType implements IStoreType {
     JPA,

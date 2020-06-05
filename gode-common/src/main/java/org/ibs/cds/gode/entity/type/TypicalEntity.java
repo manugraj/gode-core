@@ -3,17 +3,19 @@ package org.ibs.cds.gode.entity.type;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.ibs.cds.gode.util.EntityUtil;
 
+import javax.persistence.MappedSuperclass;
 import java.io.Serializable;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
+@MappedSuperclass
 public abstract class TypicalEntity<Id extends Serializable> {
     private Id id;
     public transient boolean validated;
     private OffsetDateTime createdOn;
     private OffsetDateTime updatedOn;
     private Long appId;
-    private boolean active;
+    private Boolean active;
 
     public Id getId() {
         return this.id;
@@ -33,11 +35,11 @@ public abstract class TypicalEntity<Id extends Serializable> {
         this.validated = validated;
     }
 
-    public boolean isActive() {
+    public Boolean isActive() {
         return active;
     }
 
-    public void setActive(boolean active) {
+    public void setActive(Boolean active) {
         this.active = active;
     }
 

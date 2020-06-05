@@ -9,5 +9,4 @@ public interface Repo<Entity extends TypicalEntity<Id>, Id extends Serializable>
     Entity findByAppId(Long appId);
     Optional<Entity> findById(Id id);
     Entity save(Entity entity);
-    boolean deactivate(Id id);
 }

@@ -9,6 +9,7 @@ import org.ibs.cds.gode.pagination.PageContext;
 import org.ibs.cds.gode.pagination.PagedData;
 
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -31,6 +32,12 @@ public abstract class CSStateEntityManager<View extends EntityView<Id>,Entity ex
        }
        return cacheValue;
     }
+
+    public <T> T getData(Function<CacheManager, Function<java.util.function.Predicate<T>,Function<StoreManager,T>>> resolver,  Function<T,T> cacheUpdate){
+       T data = resolver.apply(cacheManager).apply(Objects::nonNull).apply(storeManager);
+       return cacheUpdate == null ? data : cacheUpdate.apply(data);
+    }
+
 
     @Override
     public View save(View view) {

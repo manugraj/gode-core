@@ -1,6 +1,6 @@
-package org.ibs.cds.entity.type;
+package org.ibs.cds.gode.entity.type;
 
-import org.ibs.cds.entity.store.StoreType;
+import org.ibs.cds.gode.entity.store.StoreType;
 import org.ibs.cds.gode.entity.store.StoreEntity;
 
 import javax.persistence.MappedSuperclass;

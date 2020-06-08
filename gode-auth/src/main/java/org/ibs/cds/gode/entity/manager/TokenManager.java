@@ -6,6 +6,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import org.apache.commons.lang3.tuple.Pair;
 import org.ibs.cds.gode.auth.config.SecurityConfiguration;
 import org.ibs.cds.gode.entity.repo.TokenRepo;
+import org.ibs.cds.gode.entity.repo.TokenRepository;
 import org.ibs.cds.gode.entity.type.Token;
 import org.ibs.cds.gode.entity.type.TokenData;
 import org.ibs.cds.gode.exception.KnownException;
@@ -19,14 +20,14 @@ import java.util.*;
 import java.util.function.Function;
 
 @Service
-public class TokenManager extends CStateEntityManager<Token, Token, String,TokenRepo> {
+public class TokenManager extends CachedStateEntityManager<Token, Token, String, TokenRepository> {
 
     private Integer tokenExpiryPeriod;
     private String passwordSalt;
     private Integer refreshTokenExpiryPeriod;
 
     @Autowired
-    public TokenManager(TokenRepo repo, Environment environment) {
+    public TokenManager(TokenRepository repo, Environment environment) {
         super(repo);
         this.tokenExpiryPeriod = environment.getProperty("gode.security.token.access.expiry", Integer.class);
         this.refreshTokenExpiryPeriod = environment.getProperty("gode.security.token.refresh.expiry", Integer.class);

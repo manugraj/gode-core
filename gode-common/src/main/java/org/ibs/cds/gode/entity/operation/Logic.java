@@ -2,7 +2,7 @@ package org.ibs.cds.gode.entity.operation;
 
 import com.querydsl.core.types.Predicate;
 import org.ibs.cds.gode.entity.generic.DataMap;
-import org.ibs.cds.gode.entity.manager.SStateEntityManager;
+import org.ibs.cds.gode.entity.manager.StoredStateEntityManager;
 import org.ibs.cds.gode.entity.manager.operation.StateEntityManagerOperation;
 import org.ibs.cds.gode.entity.manager.operation.ViewEntityManagerOperation;
 import org.ibs.cds.gode.entity.validation.ValidationStatus;
@@ -31,11 +31,11 @@ public class Logic {
         return id -> manager -> manager.deactivate(id);
     }
 
-    public static <View extends EntityView<?>,Manager extends SStateEntityManager<View, ?, ?,?>>  Function<PageContext, Function<Manager, PagedData<View>>> findAll(){
+    public static <View extends EntityView<?>,Manager extends StoredStateEntityManager<View, ?, ?,?>>  Function<PageContext, Function<Manager, PagedData<View>>> findAll(){
         return pc -> manager -> manager.find(pc);
     }
 
-    public static <View extends EntityView<?>,Manager extends SStateEntityManager<View, ?, ?,?>>  Function<PageContext,Function<Predicate, Function<Manager,PagedData<View>>>> findAllByPredicate(){
+    public static <View extends EntityView<?>,Manager extends StoredStateEntityManager<View, ?, ?,?>>  Function<PageContext,Function<Predicate, Function<Manager,PagedData<View>>>> findAllByPredicate(){
         return pc -> predicate -> manager -> manager.find(predicate, pc);
     }
 

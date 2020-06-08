@@ -12,7 +12,7 @@ import org.ibs.cds.gode.pagination.PagedData;
 
 import java.io.Serializable;
 
-public abstract class GraphQueryManager<Manager extends SStateEntityManager<View,StoredEntity,Id,?>,View extends EntityView<Id>,StoredEntity extends StoreEntity<Id>,Id extends Serializable>
+public abstract class GraphQueryManager<Manager extends StoredStateEntityManager<View,StoredEntity,Id,?>,View extends EntityView<Id>,StoredEntity extends StoreEntity<Id>,Id extends Serializable>
         implements GraphQLQueryResolver, GraphQLMutationResolver, StateEntityManagerOperation<View, StoredEntity,Id> {
 
     private Manager manager;

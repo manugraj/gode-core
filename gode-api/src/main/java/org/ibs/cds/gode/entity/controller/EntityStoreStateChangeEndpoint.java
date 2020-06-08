@@ -1,12 +1,10 @@
 package org.ibs.cds.gode.entity.controller;
 
 import com.querydsl.core.types.Predicate;
-import org.ibs.cds.gode.entity.manager.SStateEntityManager;
-import org.ibs.cds.gode.entity.manager.operation.StateEntityManagerOperation;
+import org.ibs.cds.gode.entity.manager.StoredStateEntityManager;
 import org.ibs.cds.gode.entity.operation.Executor;
 import org.ibs.cds.gode.entity.operation.Logic;
 import org.ibs.cds.gode.entity.store.StoreEntity;
-import org.ibs.cds.gode.entity.type.TypicalEntity;
 import org.ibs.cds.gode.entity.view.EntityView;
 import org.ibs.cds.gode.exception.KnownException;
 import org.ibs.cds.gode.pagination.PageContext;
@@ -20,7 +18,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import java.io.Serializable;
 
 @Controller
-public abstract class EntityStoreStateChangeEndpoint<View extends EntityView<Id>, Entity extends StoreEntity<Id>, Manager extends SStateEntityManager<View, Entity, Id,?>, Id extends Serializable>
+public abstract class EntityStoreStateChangeEndpoint<View extends EntityView<Id>, Entity extends StoreEntity<Id>, Manager extends StoredStateEntityManager<View, Entity, Id,?>, Id extends Serializable>
         extends EntityStateChangeEndpoint<View, Entity,Manager, Id>{
 
     private Manager manager;

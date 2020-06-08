@@ -12,7 +12,7 @@ import java.io.Serializable;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public interface StoreEntityRepo<Entity extends StoreEntity<Id>, Id extends Serializable> extends QuerydslPredicateExecutor<Entity>, Repo<Entity,Id> {
+public interface StoreEntityRepo<Entity extends StoreEntity<Id>, Id extends Serializable> extends Repo<Entity,Id> {
     Optional<Entity> findById(Id id);
     Stream<Entity> findByActive(boolean enabled);
     PagedData<Entity> findByActive(boolean enabled, PageContext pageable);

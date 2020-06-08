@@ -13,13 +13,13 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public abstract class CSStateEntityManager<View extends EntityView<Id>,Entity extends CacheEntity<Id>,Id extends Serializable,CacheManager extends CStateEntityManager<View, Entity,Id,?>,StoreManager extends SStateEntityManager<View, Entity,Id,?>>
+public abstract class CachedStoredStateEntityManager<View extends EntityView<Id>,Entity extends CacheEntity<Id>,Id extends Serializable,CacheManager extends CachedStateEntityManager<View, Entity,Id,?>,StoreManager extends StoredStateEntityManager<View, Entity,Id,?>>
  implements StateEntityManagerOperation<View, Entity,Id> {
 
     private final CacheManager cacheManager;
     private  final StoreManager storeManager;
 
-    public CSStateEntityManager(CacheManager cacheManager, StoreManager storeManager){
+    public CachedStoredStateEntityManager(CacheManager cacheManager, StoreManager storeManager){
         this.storeManager = storeManager;
         this.cacheManager = cacheManager;
     }

@@ -11,8 +11,8 @@ import org.ibs.cds.gode.pagination.PagedData;
 import java.io.Serializable;
 
 @Slf4j
-public abstract class SStateEntityManager<View extends EntityView<Id>,Entity extends StoreEntity<Id>,Id extends Serializable,Repo extends StoreEntityRepo<Entity,Id>> extends StateEntityManager<View,Entity,Id,Repo> {
-    public SStateEntityManager(Repo repo) {
+public abstract class StoredStateEntityManager<View extends EntityView<Id>,Entity extends StoreEntity<Id>,Id extends Serializable,Repo extends StoreEntityRepo<Entity,Id>> extends StateEntityManager<View,Entity,Id,Repo> {
+    public StoredStateEntityManager(Repo repo) {
         super(repo);
     }
 

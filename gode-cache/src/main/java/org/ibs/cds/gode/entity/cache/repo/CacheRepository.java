@@ -8,30 +8,30 @@ import org.ibs.cds.gode.util.PageUtils;
 import java.io.Serializable;
 import java.util.Optional;
 
-public class CacheRepository<Entity extends CacheEntity<Id>, Id extends Serializable>  implements CacheEntityRepo<Entity,Id> {
+public abstract class CacheRepository<Entity extends CacheEntity<Id>, Id extends Serializable, Repo extends CacheRepo<Entity, Id>>  implements CacheEntityRepo<Entity,Id> {
 
-    private final CacheRepo<Entity,Id> cacheRepo;
+    private final Repo repo;
 
-    public CacheRepository(CacheRepo<Entity, Id> cacheRepo) {
-        this.cacheRepo = cacheRepo;
+    public CacheRepository(Repo repo) {
+        this.repo = repo;
     }
 
     @Override
     public Entity findByAppId(Long appId) {
-        return cacheRepo.findByAppId(appId);
+        return repo.findByAppId(appId);
     }
 
     @Override
     public Optional<Entity> findById(Id id) {
-        return this.cacheRepo.findById(id);
+        return this.repo.findById(id);
     }
 
     @Override
     public Entity save(Entity entity) {
-        return this.cacheRepo.save(entity);
+        return this.repo.save(entity);
     }
 
     public PagedData<Entity> findAll(PageContext context){
-        return PageUtils.getData(this.cacheRepo.findAll(), this.cacheRepo.count(), context);
+        return PageUtils.getData(this.repo.findAll(), this.repo.count(), context);
     }
 }

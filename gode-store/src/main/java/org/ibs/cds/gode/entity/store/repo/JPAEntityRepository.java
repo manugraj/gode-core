@@ -10,27 +10,27 @@ import java.io.Serializable;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public abstract class JPAEntityRepository<Entity extends StoreEntity<Id>, Id extends Serializable> implements StoreEntityRepo<Entity,Id> {
+public abstract class JPAEntityRepository<Entity extends StoreEntity<Id>, Id extends Serializable, Repo extends JPAEntityRepo<Entity,Id>> implements StoreEntityRepo<Entity,Id> {
 
-    private final JPAEntityRepo<Entity,Id> jpaEntityRepo;
+    protected final Repo repo;
 
-    public JPAEntityRepository(JPAEntityRepo<Entity, Id> jpaEntityRepo) {
-        this.jpaEntityRepo = jpaEntityRepo;
+    public JPAEntityRepository(Repo repo) {
+        this.repo = repo;
     }
 
     @Override
     public Entity findByAppId(Long appId) {
-        return jpaEntityRepo.findByAppId(appId);
+        return repo.findByAppId(appId);
     }
 
     @Override
     public Optional<Entity> findById(Id id) {
-        return jpaEntityRepo.findById(id);
+        return repo.findById(id);
     }
 
     @Override
     public Stream<Entity> findByActive(boolean enabled) {
-        return jpaEntityRepo.findByActive(enabled);
+        return repo.findByActive(enabled);
     }
 
     @Override
@@ -40,16 +40,16 @@ public abstract class JPAEntityRepository<Entity extends StoreEntity<Id>, Id ext
 
     @Override
     public Entity save(Entity entity) {
-        return jpaEntityRepo.save(entity);
+        return repo.save(entity);
     }
 
     @Override
     public PagedData<Entity> findAll(PageContext context) {
-        return PageUtils.getData( pc-> jpaEntityRepo.findAll(pc), context);
+        return PageUtils.getData( pc-> repo.findAll(pc), context);
     }
 
     @Override
     public PagedData<Entity> findAll(Predicate predicate, PageContext context) {
-        return PageUtils.getData( pc-> jpaEntityRepo.findAll(predicate, pc), context);
+        return PageUtils.getData( pc-> repo.findAll(predicate, pc), context);
     }
 }

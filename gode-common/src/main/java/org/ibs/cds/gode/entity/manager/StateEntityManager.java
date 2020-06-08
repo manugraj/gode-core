@@ -63,6 +63,7 @@ public abstract class StateEntityManager<View extends EntityView<Id>,Entity exte
     @Override
     public View save(View view){
         invokeValidation(view, this::validateView);
+        log.debug(LOG_TEMPLATE, SAVE, view);
         return transformEntity(afterSave(doSave(beforeSave(transformView(view)))));
     }
 

@@ -2,6 +2,7 @@ package org.ibs.cds.gode.pagination;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.extern.slf4j.Slf4j;
+import org.ibs.cds.gode.util.APIArgument;
 import org.ibs.cds.gode.util.EntityUtil;
 
 import java.util.HashSet;
@@ -81,4 +82,12 @@ public class PageContext {
 	public PageContext previous(){
 		return this.pageNumber < 2  ? this : PageContext.of(this.pageNumber-1, this.pageSize) ;
 	}
+
+	public static PageContext fromAPI(APIArgument argument){
+		PageContext context = PageContext.of(argument.getPageNumber(), argument.getPageSize());
+		if(argument.getSortBy() != null) context.setSortOrder(Set.of(new Sortable(argument.getSortOrder(),argument.getSortBy())));
+		return context;
+	}
+
+
 }

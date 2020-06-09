@@ -1,4 +1,4 @@
-package org.ibs.cds.gode.auth.manager;
+package org.ibs.cds.gode.entity.manager;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.ibs.cds.gode.entity.manager.TokenManager;

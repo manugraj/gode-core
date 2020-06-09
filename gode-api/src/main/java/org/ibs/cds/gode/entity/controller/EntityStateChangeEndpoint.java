@@ -31,7 +31,7 @@ public abstract class EntityStateChangeEndpoint<View extends EntityView<Id>, Ent
         return Executor.run(Logic.deactivate(), request, manager, KnownException.SAVE_FAILED, url);
     }
 
-    public Response<View> find(Request<Id> request, String url) {
+    public Response<View> find(Id request, String url) {
         return Executor.run(Logic.findById(), request, manager, KnownException.QUERY_FAILED, url);
     }
 }

@@ -1,8 +1,7 @@
 package org.ibs.cds.gode.auth.interceptor;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.ibs.cds.gode.auth.manager.AuthManager;
-import org.ibs.cds.gode.entity.manager.TokenManager;
+import org.ibs.cds.gode.entity.manager.AuthManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;

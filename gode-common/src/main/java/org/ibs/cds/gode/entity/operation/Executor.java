@@ -7,6 +7,7 @@ import org.ibs.cds.gode.pagination.PageContext;
 import org.ibs.cds.gode.util.Assert;
 import org.ibs.cds.gode.web.Request;
 import org.ibs.cds.gode.web.Response;
+import org.ibs.cds.gode.web.context.RequestContext;
 
 import java.util.function.Function;
 
@@ -21,7 +22,7 @@ public class Executor {
         try {
             return Processor.successResponse(logic.apply(request.getData()).apply(manager), request, handle);
         }catch (GodeException e){
-            throw e;
+            return Processor.failureResponse(request, e.getError(), handle);
         }catch (Throwable e){
             throw error.provide(e);
         }
@@ -36,7 +37,7 @@ public class Executor {
         try {
             return Processor.successResponse(logic.apply(request).apply(manager), "ContextLessOperation", handle);
         }catch (GodeException e){
-            throw e;
+            return Processor.failureResponse(new Request(request, new RequestContext("context-less")), e.getError(), handle);
         }catch (Throwable e){
             throw error.provide(e);
         }
@@ -51,7 +52,7 @@ public class Executor {
         try {
             return Processor.successResponse(logic.apply(ctx).apply(predicate).apply(manager), "QueryByCriteria", handle);
         }catch (GodeException e){
-            throw e;
+            return Processor.failureResponse("findByPredicate", e.getError(), handle);
         }catch (Throwable e){
             throw error.provide(e);
         }

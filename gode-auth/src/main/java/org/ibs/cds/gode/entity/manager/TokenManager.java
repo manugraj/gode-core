@@ -5,7 +5,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.apache.commons.lang3.tuple.Pair;
 import org.ibs.cds.gode.auth.config.SecurityConfiguration;
-import org.ibs.cds.gode.entity.repo.TokenRepo;
 import org.ibs.cds.gode.entity.repo.TokenRepository;
 import org.ibs.cds.gode.entity.type.Token;
 import org.ibs.cds.gode.entity.type.TokenData;

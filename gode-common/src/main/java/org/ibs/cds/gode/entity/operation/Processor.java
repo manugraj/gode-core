@@ -29,12 +29,22 @@ public class Processor {
         return response;
     }
 
+    public static <T> Response<T> failureResponse(String requestType, Error error, String urlOrHandle) {
+        ResponseContext respContext=new ResponseContext();
+        respContext.setStatus(BinaryStatus.FAILURE);
+        respContext.setRequestContext(new RequestContext(requestType));
+        respContext.setError(error);
+        respContext.setHandle(urlOrHandle);
+        Response response = new Response();
+        response.setContext(respContext);
+        return response;
+    }
+
     public static <T> Response<T> successResponse(T data, String requestType, String urlOrHandle) {
         ResponseContext respContext=new ResponseContext();
         respContext.setStatus(BinaryStatus.SUCCESS);
         respContext.setRequestContext(new RequestContext(requestType));
         respContext.setHandle(urlOrHandle);
-        Response<T> response = new Response(data, respContext);
-        return response;
+        return new Response(data, respContext);
     }
 }

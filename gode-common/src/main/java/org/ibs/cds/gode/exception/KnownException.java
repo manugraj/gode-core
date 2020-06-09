@@ -1,5 +1,7 @@
 package org.ibs.cds.gode.exception;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
+
 import java.io.Serializable;
 
 public enum KnownException {
@@ -126,8 +128,12 @@ public enum KnownException {
         this.message = message;
     }
 
+    private static String details(Throwable e){
+        return "Message: ".concat(ExceptionUtils.getMessage(e)).concat("| Root cause message: ").concat(ExceptionUtils.getRootCauseMessage(e));
+    }
+
     public <T extends GodeException>  T provide(Throwable e){
-        return provide(e, null);
+        return provide(e, details(e));
     }
     public <T extends GodeException>  T provide(){
         return provide((String) null);

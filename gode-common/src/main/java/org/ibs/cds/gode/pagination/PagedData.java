@@ -7,13 +7,14 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Stream;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PagedData<T> {
+public class PagedData<T> implements Serializable {
 
 	private List<T> data;
 	private QueryContext context;

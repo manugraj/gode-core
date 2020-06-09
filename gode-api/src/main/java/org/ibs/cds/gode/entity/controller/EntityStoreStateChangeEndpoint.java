@@ -9,7 +9,7 @@ import org.ibs.cds.gode.entity.view.EntityView;
 import org.ibs.cds.gode.exception.KnownException;
 import org.ibs.cds.gode.pagination.PageContext;
 import org.ibs.cds.gode.pagination.PagedData;
-import org.ibs.cds.gode.web.Request;
+import org.ibs.cds.gode.util.APIArgument;
 import org.ibs.cds.gode.web.Response;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.stereotype.Controller;
@@ -28,11 +28,11 @@ public abstract class EntityStoreStateChangeEndpoint<View extends EntityView<Id>
         this.manager = manager;
     }
 
-    public Response<PagedData<View>> findAll(PageContext request, String url) {
-        return Executor.run(Logic.findAll(), request, manager, KnownException.QUERY_FAILED, url);
+    public Response<PagedData<View>> findAll(@ModelAttribute APIArgument argument, String url) {
+        return Executor.run(Logic.findAll(), PageContext.fromAPI(argument), manager, KnownException.QUERY_FAILED, url);
     }
 
-    public Response<PagedData<View>> findAllByPredicate(@QuerydslPredicate Predicate predicate, @ModelAttribute PageContext pageContext, String url) {
-        return Executor.run(Logic.findAllByPredicate(), pageContext, predicate, manager, KnownException.QUERY_FAILED, url);
+    public Response<PagedData<View>> findAllByPredicate(@QuerydslPredicate Predicate predicate, @ModelAttribute APIArgument argument, String url) {
+        return Executor.run(Logic.findAllByPredicate(), PageContext.fromAPI(argument), predicate, manager, KnownException.QUERY_FAILED, url);
     }
 }

@@ -11,6 +11,7 @@ import org.ibs.cds.gode.exception.KnownException;
 import org.ibs.cds.gode.status.BinaryStatus;
 
 import java.io.Serializable;
+import java.time.OffsetDateTime;
 import java.util.function.Function;
 
 @Slf4j
@@ -43,6 +44,20 @@ public abstract class StateEntityManager<View extends EntityView<Id>,Entity exte
         return this.repo.save(entity);
     }
 
+    private boolean isNewEntity(Entity entity){
+        return entity.getCreatedOn() !=null && entity.getUpdatedOn() !=null && entity.getCreatedOn().isEqual(entity.getCreatedOn());
+    }
+
+    private void setDefaultFields(Entity entity) {
+        OffsetDateTime now = OffsetDateTime.now();
+        setDefaultFields(entity, now);
+    }
+
+    private void setDefaultFields(Entity entity, OffsetDateTime time) {
+        if (entity.getCreatedOn() == null) entity.setCreatedOn(time);
+        entity.setUpdatedOn(time);
+    }
+
     @Override
     public View findByAppId(Long appId){
         log.debug(LOG_TEMPLATE, FIND_BY_APPID, appId);
@@ -50,6 +65,8 @@ public abstract class StateEntityManager<View extends EntityView<Id>,Entity exte
     }
 
     public Entity beforeSave(Entity entity){
+        log.debug(LOG_TEMPLATE, "defaultFieldSetting", entity);
+        setDefaultFields(entity);
         log.debug(LOG_TEMPLATE, BFR_SAVE, entity);
         invokeValidation(entity, this::validateEntity);
         return entity;

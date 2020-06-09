@@ -28,7 +28,7 @@ public abstract class EntityStoreStateChangeEndpoint<View extends EntityView<Id>
         this.manager = manager;
     }
 
-    public Response<PagedData<View>> findAll(Request<PageContext> request, String url) {
+    public Response<PagedData<View>> findAll(PageContext request, String url) {
         return Executor.run(Logic.findAll(), request, manager, KnownException.QUERY_FAILED, url);
     }
 

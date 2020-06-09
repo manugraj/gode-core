@@ -27,6 +27,21 @@ public class Executor {
         }
     }
 
+    public static <RequestType, Manager, ResponseType> Response<ResponseType> run(Function<RequestType, Function<Manager,ResponseType>> logic,
+                                                                                  RequestType request,
+                                                                                  Manager manager,
+                                                                                  KnownException error,
+                                                                                  String handle){
+        Assert.notNull("Request processing essentials are unavailable", logic, request, error);
+        try {
+            return Processor.successResponse(logic.apply(request).apply(manager), "ContextLessOperation", handle);
+        }catch (GodeException e){
+            throw e;
+        }catch (Throwable e){
+            throw error.provide(e);
+        }
+    }
+
     public static <Manager, ResponseType> Response<ResponseType> run(Function<PageContext,Function<Predicate, Function<Manager,ResponseType>>> logic,
                                                                                   PageContext ctx, Predicate predicate,
                                                                                   Manager manager,

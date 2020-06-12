@@ -3,6 +3,7 @@ package org.ibs.cds.gode.entity.store.jpa;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.ibs.cds.gode.entity.store.condition.JPAStoreEnabler;
 import org.ibs.cds.gode.system.GodeAppEnvt;
+import org.ibs.cds.gode.system.GodeConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.*;
@@ -23,10 +24,10 @@ import java.util.Properties;
 @Configuration
 @EnableTransactionManagement
 @Conditional(JPAStoreEnabler.class)
-@EnableJpaRepositories(basePackages = "org.ibs.cds.gode.entity.repo")
-@ComponentScan("org.ibs.cds.gode")
+@EnableJpaRepositories(basePackages = GodeConstant.ENTITY_BASE_PACKAGE_NAME)
+@ComponentScan(GodeConstant.GODE_BASE_PACKAGE_NAME)
 @PropertySource(GodeAppEnvt.GODE_PROPERTIES)
-@EntityScan("org.ibs.cds.gode.entity.*")
+@EntityScan(GodeConstant.ENTITY_BASE_PACKAGE_ALL)
 public class JPAStoreConfig {
 
     private final Environment behaviour;

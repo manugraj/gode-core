@@ -1,17 +1,15 @@
-package org.ibs.cds.gode.entity.store.jpa.repo;
+package org.ibs.cds.gode.entity.store.mongo.repo;
 
-import org.ibs.cds.gode.entity.type.JPAEntity;
+import org.ibs.cds.gode.entity.type.MongoEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 
 import java.io.Serializable;
 import java.util.stream.Stream;
-
 @NoRepositoryBean
-public interface JPASpringRepo<Entity extends JPAEntity<Id>,Id extends Serializable> extends JpaRepository<Entity, Id> {
-
+public interface MongoDBSpringRepo<Entity extends MongoEntity<Id>,Id extends Serializable> extends MongoRepository<Entity, Id> {
     Stream<Entity> findByActive(boolean active);
     Page<Entity> findByActive(boolean active, Pageable pageable);
     Entity findByAppId(Long appId);

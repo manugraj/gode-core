@@ -1,8 +1,7 @@
 package org.ibs.cds.gode.entity.store.repo;
 
 import com.querydsl.core.types.Predicate;
-import org.ibs.cds.gode.entity.store.StoreEntity;
-import org.ibs.cds.gode.entity.type.JPAEntity;
+import org.ibs.cds.gode.entity.type.MongoEntity;
 import org.ibs.cds.gode.pagination.PageContext;
 import org.ibs.cds.gode.pagination.PagedData;
 import org.ibs.cds.gode.util.PageUtils;
@@ -11,11 +10,11 @@ import java.io.Serializable;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public abstract class JPAEntityRepository<Entity extends JPAEntity<Id>, Id extends Serializable, Repo extends JPAEntityRepo<Entity,Id>> implements StoreEntityRepo<Entity,Id> {
+public abstract class MongoEntityRepository<Entity extends MongoEntity<Id>, Id extends Serializable,Repo extends MongoEntityRepo<Entity,Id>> implements StoreEntityRepo<Entity,Id> {
 
-    protected final Repo repo;
+    private Repo repo;
 
-    public JPAEntityRepository(Repo repo) {
+    public MongoEntityRepository(Repo repo) {
         this.repo = repo;
     }
 
@@ -36,7 +35,7 @@ public abstract class JPAEntityRepository<Entity extends JPAEntity<Id>, Id exten
 
     @Override
     public PagedData<Entity> findByActive(boolean enabled, PageContext pageable) {
-        return PageUtils.getData( pc-> repo.findByActive(enabled, pc), pageable);
+        return null;
     }
 
     @Override
@@ -46,7 +45,7 @@ public abstract class JPAEntityRepository<Entity extends JPAEntity<Id>, Id exten
 
     @Override
     public PagedData<Entity> findAll(PageContext context) {
-        return PageUtils.getData( pc-> repo.findAll(pc), context);
+        return PageUtils.getData(pc-> repo.findAll(pc), context);
     }
 
     @Override

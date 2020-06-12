@@ -1,17 +1,27 @@
-package org.ibs.cds.gode.entity.cache;
+package org.ibs.cds.gode.entity.type;
 
+import com.querydsl.core.annotations.QuerySupertype;
 import org.ibs.cds.gode.entity.store.StoreEntity;
+import org.ibs.cds.gode.entity.store.StoreType;
 import org.ibs.cds.gode.util.EntityUtil;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
-public abstract class CacheEntity<Id extends Serializable> extends StoreEntity<Id> {
+@Document
+@QuerySupertype
+public abstract class MongoEntity<Id extends Serializable> extends StoreEntity<Id> {
     private Date createdOn;
     private Date updatedOn;
     private Long appId;
     private Boolean active;
+
+    @Override
+    public StoreType getStoreType() {
+        return StoreType.MONGODB;
+    }
 
     public Boolean isActive() {
         return active;
@@ -59,7 +69,7 @@ public abstract class CacheEntity<Id extends Serializable> extends StoreEntity<I
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        CacheEntity<?> that = (CacheEntity<?>) o;
+        MongoEntity<?> that = (MongoEntity<?>) o;
         return validated == that.validated &&
                 active == that.active &&
                 Objects.equals(getId(), that.getId()) &&

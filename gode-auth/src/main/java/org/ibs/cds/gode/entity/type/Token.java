@@ -15,6 +15,16 @@ public class Token extends CacheEntity<String> {
     private TokenData refreshToken;
 
     @Override
+    public String getId() {
+        return this.handle;
+    }
+
+    @Override
+    public void setId(String handle) {
+        this.handle = handle;
+    }
+
+    @Override
     public CacheType getStoreType() {
         return CacheType.IGNITE;
     }

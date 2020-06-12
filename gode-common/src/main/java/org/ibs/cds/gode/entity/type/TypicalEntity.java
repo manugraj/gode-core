@@ -3,27 +3,19 @@ package org.ibs.cds.gode.entity.type;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.ibs.cds.gode.util.EntityUtil;
 
-import javax.persistence.MappedSuperclass;
 import java.io.Serializable;
 import java.time.OffsetDateTime;
+import java.util.Date;
 import java.util.Objects;
 
-@MappedSuperclass
-public abstract class TypicalEntity<Id extends Serializable> {
-    private Id id;
+public abstract class TypicalEntity<Id extends Serializable> implements Serializable{
+
     public transient boolean validated;
-    private OffsetDateTime createdOn;
-    private OffsetDateTime updatedOn;
-    private Long appId;
-    private Boolean active;
 
-    public Id getId() {
-        return this.id;
-    }
+    @JsonIgnore
+    public abstract Id getId();
 
-    public void setId(Id id) {
-        this.id = id;
-    }
+    public abstract void setId(Id id) ;
 
     @JsonIgnore
     public boolean isValidated() {
@@ -35,37 +27,21 @@ public abstract class TypicalEntity<Id extends Serializable> {
         this.validated = validated;
     }
 
-    public Boolean isActive() {
-        return active;
-    }
+    public abstract Boolean isActive();
 
-    public void setActive(Boolean active) {
-        this.active = active;
-    }
+    public abstract void setActive(Boolean active);
 
-    public OffsetDateTime getCreatedOn() {
-        return createdOn;
-    }
+    public abstract Date getCreatedOn();
 
-    public void setCreatedOn(OffsetDateTime createdOn) {
-        this.createdOn = createdOn;
-    }
+    public abstract void setCreatedOn(Date createdOn) ;
 
-    public OffsetDateTime getUpdatedOn() {
-        return updatedOn;
-    }
+    public abstract Date getUpdatedOn();
 
-    public void setUpdatedOn(OffsetDateTime updatedOn) {
-        this.updatedOn = updatedOn;
-    }
+    public abstract void setUpdatedOn(Date updatedOn);
 
-    public Long getAppId() {
-        return appId;
-    }
+    public abstract Long getAppId();
 
-    public void setAppId(Long appId) {
-        this.appId = appId;
-    }
+    public abstract void setAppId(Long appId);
 
     @Override
     public int hashCode() {
@@ -75,18 +51,5 @@ public abstract class TypicalEntity<Id extends Serializable> {
     @Override
     public String toString() {
         return EntityUtil.toString(this);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        TypicalEntity<?> that = (TypicalEntity<?>) o;
-        return validated == that.validated &&
-                active == that.active &&
-                Objects.equals(id, that.id) &&
-                Objects.equals(createdOn, that.createdOn) &&
-                Objects.equals(updatedOn, that.updatedOn) &&
-                Objects.equals(appId, that.appId);
     }
 }

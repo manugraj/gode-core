@@ -4,13 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.ibs.cds.gode.entity.cache.CacheEntity;
-import org.ibs.cds.gode.entity.cache.CacheType;
+import org.ibs.cds.gode.entity.cache.KeyId;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 public class Token extends CacheEntity<String> {
-    private String handle;
+    private @KeyId
+    String handle;
     private TokenData accessToken;
     private TokenData refreshToken;
 
@@ -24,8 +25,4 @@ public class Token extends CacheEntity<String> {
         this.handle = handle;
     }
 
-    @Override
-    public CacheType getStoreType() {
-        return CacheType.IGNITE;
-    }
 }

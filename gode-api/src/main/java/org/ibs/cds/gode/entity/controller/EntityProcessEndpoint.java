@@ -1,6 +1,7 @@
 package org.ibs.cds.gode.entity.controller;
 
 import org.ibs.cds.gode.entity.generic.DataMap;
+import org.ibs.cds.gode.entity.manager.EntityViewManager;
 import org.ibs.cds.gode.entity.manager.operation.ViewEntityManagerOperation;
 import org.ibs.cds.gode.entity.operation.Executor;
 import org.ibs.cds.gode.entity.operation.Logic;
@@ -14,7 +15,7 @@ import org.springframework.stereotype.Controller;
 import java.io.Serializable;
 
 @Controller
-public abstract class EntityProcessEndpoint<View extends EntityView<Id>, Manager extends ViewEntityManagerOperation<View, Id>, Id extends Serializable> {
+public abstract class EntityProcessEndpoint<View extends EntityView<Id>, Manager extends EntityViewManager<View, Id>, Id extends Serializable> {
 
     private Manager manager;
 

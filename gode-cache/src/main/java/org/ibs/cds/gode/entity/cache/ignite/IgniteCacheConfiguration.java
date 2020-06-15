@@ -11,18 +11,17 @@ import org.apache.ignite.logger.slf4j.Slf4jLogger;
 import org.apache.ignite.spi.discovery.tcp.TcpDiscoverySpi;
 import org.apache.ignite.spi.discovery.tcp.ipfinder.vm.TcpDiscoveryVmIpFinder;
 import org.apache.ignite.springdata20.repository.config.EnableIgniteRepositories;
-import org.ibs.cds.gode.entity.cache.CacheEntity;
+import org.ibs.cds.gode.entity.cache.MarkCacheRepo;
+import org.ibs.cds.gode.entity.cache.KeyId;
 import org.ibs.cds.gode.entity.cache.condition.IgniteCacheEnabler;
+import org.ibs.cds.gode.entity.cache.CacheableEntity;
 import org.ibs.cds.gode.exception.KnownException;
 import org.ibs.cds.gode.system.GodeAppEnvt;
 import org.ibs.cds.gode.util.CacheUtil;
 import org.reflections.Reflections;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Conditional;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 
 import java.lang.reflect.Field;
@@ -33,14 +32,16 @@ import java.util.stream.Stream;
 @Slf4j
 @Conditional(IgniteCacheEnabler.class)
 @PropertySource(GodeAppEnvt.GODE_PROPERTIES)
-@EnableIgniteRepositories(basePackages = {GodeAppEnvt.CACHE_ENTITY_REPO_PACKAGE_NAME})
-@EntityScan(GodeAppEnvt.CACHE_ENTITY_BASE_PACKAGE_NAME)
+@EnableIgniteRepositories(basePackages = {GodeAppEnvt.ENTITY_BASE_PACKAGE_NAME}, includeFilters = {
+        @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = MarkCacheRepo.class)
+})
+@EntityScan(GodeAppEnvt.ENTITY_BASE_PACKAGE_NAME)
 public class IgniteCacheConfiguration {
 
     private static final String GODE_APP = "gode_app";
-    private static final String CACHE_WAL_STORE = "./cache/walStore";
-    private static final String CACHE_WAL_ARCHIVE = "./cache/walArchive";
-    private static final String CACHE_STORE = "./cache/store";
+    private static final String CACHE_WAL_STORE = "cache/walStore";
+    private static final String CACHE_WAL_ARCHIVE = "cache/walArchive";
+    private static final String CACHE_STORE = "cache/store";
     private static final String GODE_DATA_REGION = "gode_data_region";
 
     @Autowired
@@ -58,7 +59,7 @@ public class IgniteCacheConfiguration {
         log.debug("Ignite peristence enabled: {}", persistenceEnabled);
         if (persistenceEnabled) {
             DataStorageConfiguration dataStorageConfig = new DataStorageConfiguration();
-            dataStorageConfig.setStoragePath(envt.getProperty("gode.cache.ignite.persistence.location", CACHE_STORE));
+            dataStorageConfig.setStoragePath( CACHE_STORE);
             dataStorageConfig.setWalArchivePath(CACHE_WAL_ARCHIVE);
             dataStorageConfig.setWalPath(CACHE_WAL_STORE);
             dataStorageConfig.setPageSize(envt.getProperty("gode.cache.ignite.persistence.pagesize", Integer.class));
@@ -102,31 +103,19 @@ public class IgniteCacheConfiguration {
         try {
             IgniteConfiguration config = igniteConfiguration();
             List<CacheConfiguration<?, ?>> caches = new ArrayList<>();
-            Reflections reflections = new Reflections(GodeAppEnvt.ENTITY_BASE_PACKAGE_NAME);
-            log.debug("Ignite Scanning > {}", GodeAppEnvt.ENTITY_BASE_PACKAGE_NAME);
-            Set<Class<? extends CacheEntity>> cacheableEntities = reflections.getSubTypesOf(CacheEntity.class);
+            Reflections reflections = new Reflections(GodeAppEnvt.ENTITY_TYPE_PACKAGE_NAME);
+            log.debug("Ignite Scanning > {}", GodeAppEnvt.ENTITY_TYPE_PACKAGE_NAME);
+            Set<Class<? extends CacheableEntity>> cacheableEntities = reflections.getSubTypesOf(CacheableEntity.class);
             log.debug("Cache candidates found: {} ", CollectionUtils.isNotEmpty(cacheableEntities));
 
-            for (Class<? extends CacheEntity> cacheableEntity : cacheableEntities) {
+            for (Class<? extends CacheableEntity> cacheableEntity : cacheableEntities) {
                 Field[] fields = cacheableEntity.getDeclaredFields();
-                Optional<Field> idField = Stream.of(fields).filter(field -> field.getName().equals("id")).findAny();
+                Optional<Field> idField = Stream.of(fields).filter(field -> field.isAnnotationPresent(KeyId.class)).findAny();
                 String simpleName = cacheableEntity.getSimpleName();
-                if (idField.isPresent()) {
-                    Field field = idField.get();
-                    String cacheName = CacheUtil.getCacheName(simpleName);
-                    CacheConfiguration<?, ?> cache = new CacheConfiguration<>(cacheName);
-                    log.debug("Ignite entity scan for {}", cacheName);
-                    cache.setIndexedTypes(field.getType(), cacheableEntity);
-                    log.debug("Ignite cache starting for {}", cacheableEntity.getSimpleName());
-                    if (simpleName.equals("counter")) {
-                        log.debug("Counter cache set to atomic persistence");
-                        cache.setAtomicityMode(CacheAtomicityMode.ATOMIC);
-                    }
-                    cache.setDataRegionName(GODE_DATA_REGION);
-                    cache.setWriteSynchronizationMode(CacheWriteSynchronizationMode.FULL_ASYNC);
-                    caches.add(cache);
+                if (idField.isPresent() && !cacheableEntity.isInterface()) {
+                    createCache(caches, cacheableEntity, idField, simpleName);
                 } else {
-                    log.error("Cannot initialise cache for {}", simpleName);
+                    log.error("No cache initialisation for {}", simpleName);
                 }
             }
             config.setCacheConfiguration(caches.toArray(new CacheConfiguration[0]));
@@ -136,5 +125,21 @@ public class IgniteCacheConfiguration {
         } catch (Throwable e) {
             throw KnownException.FAILED_TO_START.provide(e);
         }
+    }
+
+    private void createCache(List<CacheConfiguration<?, ?>> caches, Class<? extends CacheableEntity> cacheableEntity, Optional<Field> idField, String simpleName) {
+        Field field = idField.get();
+        String cacheName = CacheUtil.getCacheName(simpleName);
+        CacheConfiguration<?, ?> cache = new CacheConfiguration<>(cacheName);
+        log.debug("Ignite entity scan for {}", cacheName);
+        cache.setIndexedTypes(field.getType(), cacheableEntity);
+        log.debug("Ignite cache starting for {}", cacheableEntity.getSimpleName());
+        if (simpleName.equals("counter")) {
+            log.debug("Counter cache set to atomic persistence");
+            cache.setAtomicityMode(CacheAtomicityMode.ATOMIC);
+        }
+        cache.setDataRegionName(GODE_DATA_REGION);
+        cache.setWriteSynchronizationMode(CacheWriteSynchronizationMode.FULL_ASYNC);
+        caches.add(cache);
     }
 }

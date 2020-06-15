@@ -11,6 +11,7 @@
 
     <artifactId>gode-store</artifactId>
 
+
     <dependencies>
         <dependency>
             <groupId>org.ibs.cds.gode</groupId>

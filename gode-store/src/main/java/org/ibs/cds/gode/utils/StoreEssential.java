@@ -14,6 +14,7 @@ public class StoreEssential {
     private JavaArtifact entityAnnotation;
     private JavaArtifact entityType;
     private JavaArtifact repo;
+    private JavaArtifact repoAnnotation;
     private JavaArtifact repository;
     private JavaArtifact idAnnotation;
     private StoreType type;

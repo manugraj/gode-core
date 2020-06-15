@@ -1,8 +1,8 @@
 package org.ibs.cds.gode.entity.store.jpa;
 
 import org.apache.commons.dbcp2.BasicDataSource;
+import org.ibs.cds.gode.entity.store.MarkJPARepo;
 import org.ibs.cds.gode.entity.store.condition.JPAStoreEnabler;
-import org.ibs.cds.gode.system.GodeAppEnvt;
 import org.ibs.cds.gode.system.GodeConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -24,9 +24,12 @@ import java.util.Properties;
 @Configuration
 @EnableTransactionManagement
 @Conditional(JPAStoreEnabler.class)
-@EnableJpaRepositories(basePackages = GodeConstant.ENTITY_BASE_PACKAGE_NAME)
+@EnableJpaRepositories(basePackages = GodeConstant.ENTITY_BASE_PACKAGE_NAME,
+includeFilters = {
+        @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = MarkJPARepo.class)
+})
 @ComponentScan(GodeConstant.GODE_BASE_PACKAGE_NAME)
-@PropertySource(GodeAppEnvt.GODE_PROPERTIES)
+@PropertySource(GodeConstant.GODE_PROPERTIES)
 @EntityScan(GodeConstant.ENTITY_BASE_PACKAGE_ALL)
 public class JPAStoreConfig {
 
@@ -41,7 +44,7 @@ public class JPAStoreConfig {
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource());
-        em.setPackagesToScan(new String[]{"org.ibs.cds.gode.entity"});
+        em.setPackagesToScan(new String[]{GodeConstant.ENTITY_BASE_PACKAGE_NAME});
         JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
         em.setJpaProperties(additionalProperties());

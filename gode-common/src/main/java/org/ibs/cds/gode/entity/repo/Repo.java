@@ -12,4 +12,5 @@ public interface Repo<Entity extends TypicalEntity<Id>, Id extends Serializable>
     Optional<Entity> findById(Id id);
     Entity save(Entity entity);
     PagedData<Entity> findAll(PageContext context);
+    RepoType type();
 }

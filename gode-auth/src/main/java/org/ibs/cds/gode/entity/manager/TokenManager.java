@@ -19,7 +19,7 @@ import java.util.*;
 import java.util.function.Function;
 
 @Service
-public class TokenManager extends CachedStateEntityManager<Token, Token, String, TokenRepository> {
+public class TokenManager extends EntityManager<Token, Token, String> {
 
     private Integer tokenExpiryPeriod;
     private String passwordSalt;
@@ -27,7 +27,7 @@ public class TokenManager extends CachedStateEntityManager<Token, Token, String,
 
     @Autowired
     public TokenManager(TokenRepository repo, Environment environment) {
-        super(repo);
+        super(null,repo);
         this.tokenExpiryPeriod = environment.getProperty("gode.security.token.access.expiry", Integer.class);
         this.refreshTokenExpiryPeriod = environment.getProperty("gode.security.token.refresh.expiry", Integer.class);
         this.passwordSalt = environment.getProperty("gode.security.token.salt");
@@ -149,12 +149,12 @@ public class TokenManager extends CachedStateEntityManager<Token, Token, String,
 
 
     @Override
-    public Token transformEntity(Token entity) {
-        return entity;
+    public Optional<Token> transformEntity(Optional<Token> token) {
+        return token;
     }
 
     @Override
-    public Token transformView(Token entity) {
+    public Optional<Token> transformView(Optional<Token> entity) {
         return entity;
     }
 }

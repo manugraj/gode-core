@@ -12,6 +12,7 @@ import org.ibs.cds.gode.status.BinaryStatus;
 
 import java.io.Serializable;
 import java.time.OffsetDateTime;
+import java.util.Date;
 import java.util.function.Function;
 
 @Slf4j
@@ -45,15 +46,15 @@ public abstract class StateEntityManager<View extends EntityView<Id>,Entity exte
     }
 
     private boolean isNewEntity(Entity entity){
-        return entity.getCreatedOn() !=null && entity.getUpdatedOn() !=null && entity.getCreatedOn().isEqual(entity.getCreatedOn());
+        return entity.getCreatedOn() !=null && entity.getUpdatedOn() !=null && entity.getCreatedOn().equals(entity.getCreatedOn());
     }
 
     private void setDefaultFields(Entity entity) {
-        OffsetDateTime now = OffsetDateTime.now();
+        Date now = new Date();
         setDefaultFields(entity, now);
     }
 
-    private void setDefaultFields(Entity entity, OffsetDateTime time) {
+    private void setDefaultFields(Entity entity, Date time) {
         if (entity.getCreatedOn() == null) entity.setCreatedOn(time);
         entity.setUpdatedOn(time);
     }

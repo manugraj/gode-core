@@ -2,6 +2,7 @@ package org.ibs.cds.gode.entity.store.repo;
 
 import com.querydsl.core.types.Predicate;
 import org.ibs.cds.gode.entity.store.StoreEntity;
+import org.ibs.cds.gode.entity.type.JPAEntity;
 import org.ibs.cds.gode.pagination.PageContext;
 import org.ibs.cds.gode.pagination.PagedData;
 import org.ibs.cds.gode.util.PageUtils;
@@ -10,7 +11,7 @@ import java.io.Serializable;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public abstract class JPAEntityRepository<Entity extends StoreEntity<Id>, Id extends Serializable, Repo extends JPAEntityRepo<Entity,Id>> implements StoreEntityRepo<Entity,Id> {
+public abstract class JPAEntityRepository<Entity extends JPAEntity<Id>, Id extends Serializable, Repo extends JPAEntityRepo<Entity,Id>> implements StoreEntityRepo<Entity,Id> {
 
     protected final Repo repo;
 
@@ -35,7 +36,7 @@ public abstract class JPAEntityRepository<Entity extends StoreEntity<Id>, Id ext
 
     @Override
     public PagedData<Entity> findByActive(boolean enabled, PageContext pageable) {
-        return null;
+        return PageUtils.getData( pc-> repo.findByActive(enabled, pc), pageable);
     }
 
     @Override

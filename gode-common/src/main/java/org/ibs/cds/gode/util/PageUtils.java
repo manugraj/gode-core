@@ -45,7 +45,7 @@ public class PageUtils {
         return fromPage(function.apply(toBaseRequest(ctx)));
     }
 
-    public static <T extends TypicalEntity<?>,R extends TypicalEntity<?>> PagedData<T> transform(PagedData<T> data, Function<T,R> transformer) {
+    public static <T extends TypicalEntity<?>,R> PagedData<R> transform(PagedData<T> data, Function<T,R> transformer) {
         return new PagedData(data.stream().map(transformer).collect(Collectors.toList()), data.getContext());
     }
 

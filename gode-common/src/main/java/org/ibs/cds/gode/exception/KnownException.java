@@ -110,6 +110,54 @@ public enum KnownException {
         public AuthException provide(Throwable e, Serializable details) {
             return new AuthException(new Error(getCode(), getMessage(), details),getMessage());
         }
+    },
+    SERILISATION_EXCEPTION(9, "Serialization/Deserialization exception"){
+        private String message = getMessage();
+        @Override
+        public GodeRuntimeException provide(Serializable details) {
+            return new GodeRuntimeException(new Error(getCode(), getMessage(), details), message);
+        }
+
+        @Override
+        public GodeRuntimeException provide(Throwable e, Serializable details) {
+            return new GodeRuntimeException(new Error(getCode(), getMessage(), details),getMessage());
+        }
+    },
+    QUEUE_PUSH_FAILED_EXCEPTION(10, "Push to queue failed"){
+        private String message = getMessage();
+        @Override
+        public GodeRuntimeException provide(Serializable details) {
+            return new GodeRuntimeException(new Error(getCode(), getMessage(), details), message);
+        }
+
+        @Override
+        public GodeRuntimeException provide(Throwable e, Serializable details) {
+            return new GodeRuntimeException(new Error(getCode(), getMessage(), details),getMessage());
+        }
+    },
+    QUEUE_CONSUMPTION_FAILED_EXCEPTION(11, "Consumption from queue failed"){
+        private String message = getMessage();
+        @Override
+        public GodeRuntimeException provide(Serializable details) {
+            return new GodeRuntimeException(new Error(getCode(), getMessage(), details), message);
+        }
+
+        @Override
+        public GodeRuntimeException provide(Throwable e, Serializable details) {
+            return new GodeRuntimeException(new Error(getCode(), getMessage(), details),getMessage());
+        }
+    },
+    MEDIA_NOT_FOUND_EXCEPTION(12, "No media found"){
+        private String message = getMessage();
+        @Override
+        public GodeRuntimeException provide(Serializable details) {
+            return new GodeRuntimeException(new Error(getCode(), getMessage(), details), message);
+        }
+
+        @Override
+        public GodeRuntimeException provide(Throwable e, Serializable details) {
+            return new GodeRuntimeException(new Error(getCode(), getMessage(), details),getMessage());
+        }
     };
 
     private final int code;

@@ -11,7 +11,7 @@ public class GodeConstant {
     public static final String GODE_PROPERTIES="classpath:gode.properties";
     public static final String API_VERSION ="/gode/api/v1";
     public static final String HIDDEN = "(hidden)";
-
+    public static final String GODE_API_BASE = "/gode/app";
     public StringJoiner url(String data){
         return new StringJoiner("/");
     }

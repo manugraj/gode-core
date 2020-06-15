@@ -14,6 +14,7 @@ public abstract class StoreEntity<Id extends Serializable> implements StateEntit
     public abstract Id getId();
 
     public abstract void setId(Id id);
+    @JsonIgnore
     public abstract IStoreType getStoreType();
 
     @JsonIgnore

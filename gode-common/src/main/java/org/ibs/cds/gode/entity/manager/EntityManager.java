@@ -39,20 +39,14 @@ public abstract class EntityManager<View extends EntityView<Id>, Entity extends 
     protected static final String LOG_TEMPLATE = "Action : {} | Arguments: {}";
     protected static final String LOG_TEMPLATE2 = "Action : {} | Arguments: {},{}";
 
-    protected Map<RepoType, Repo<Entity, Id>> repoContainer;
+    protected EntityRepository<Entity,Id> repository;
 
     public <StoreRepo extends StoreEntityRepo<Entity, Id>, CacheRepo extends CacheableEntityRepo<Entity, Id>> EntityManager(
             StoreRepo storeEntityRepo,
             CacheRepo cacheableEntityRepo) {
-        repoContainer = new EnumMap<>(RepoType.class);
-        populateRepo(storeEntityRepo);
-        populateRepo(cacheableEntityRepo);
-    }
-
-    private void populateRepo(Repo<Entity, Id> repo){
-        if(repo !=null){
-            repoContainer.put(repo.type(), repo);
-        }
+        repository = new EntityRepository();
+        repository.add(storeEntityRepo);
+        repository.add(cacheableEntityRepo);
     }
 
     private boolean isNewEntity(Entity entity) {
@@ -91,7 +85,7 @@ public abstract class EntityManager<View extends EntityView<Id>, Entity extends 
 
 
     protected <T, A> T operateAll(A argument, BiFunction<Repo<Entity, Id>, A, T> perform) {
-        return this.repoContainer.values().stream()
+        return this.repository.values().stream()
                 .map(repo -> perform.apply(repo, argument))
                 .filter(Objects::nonNull)
                 .reduce((first, second) -> second)
@@ -99,7 +93,7 @@ public abstract class EntityManager<View extends EntityView<Id>, Entity extends 
     }
 
     protected <T, A> T operateFirst(A argument, BiFunction<Repo<Entity, Id>, A, T> perform) {
-        return this.repoContainer.values().stream()
+        return this.repository.values().stream()
                 .map(repo -> perform.apply(repo, argument))
                 .filter(Objects::nonNull)
                 .findFirst()
@@ -158,7 +152,7 @@ public abstract class EntityManager<View extends EntityView<Id>, Entity extends 
 
     public PagedData<View> find(Predicate predicate, PageContext pageContext) {
         log.debug(LOG_TEMPLATE2, FIND_BY_PREDICATE, predicate, pageContext);
-        Repo<Entity, Id> entityIdRepo = repoContainer.get(RepoType.STORE);
+        Repo<Entity, Id> entityIdRepo = repository.get(RepoType.STORE);
         if (entityIdRepo != null) {
             return transformEntityPage(((StoreEntityRepo<Entity, Id>) entityIdRepo).findAll(predicate, pageContext));
         }

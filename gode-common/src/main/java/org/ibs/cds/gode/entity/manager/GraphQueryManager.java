@@ -2,18 +2,19 @@ package org.ibs.cds.gode.entity.manager;
 
 import com.coxautodev.graphql.tools.GraphQLMutationResolver;
 import com.coxautodev.graphql.tools.GraphQLQueryResolver;
-import com.querydsl.core.types.Predicate;
 import org.ibs.cds.gode.entity.generic.DataMap;
 import org.ibs.cds.gode.entity.manager.operation.StateEntityManagerOperation;
-import org.ibs.cds.gode.entity.store.StoreEntity;
+import org.ibs.cds.gode.entity.type.TypicalEntity;
+import org.ibs.cds.gode.entity.validation.ValidationStatus;
 import org.ibs.cds.gode.entity.view.EntityView;
 import org.ibs.cds.gode.pagination.PageContext;
 import org.ibs.cds.gode.pagination.PagedData;
 
 import java.io.Serializable;
+import java.util.Optional;
 
-public abstract class GraphQueryManager<Manager extends StoredStateEntityManager<View,StoredEntity,Id,?>,View extends EntityView<Id>,StoredEntity extends StoreEntity<Id>,Id extends Serializable>
-        implements GraphQLQueryResolver, GraphQLMutationResolver, StateEntityManagerOperation<View, StoredEntity,Id> {
+public class GraphQueryManager<Manager extends EntityManager<View,Entity,Id>,View extends EntityView<Id>,Entity extends TypicalEntity<Id>,Id extends Serializable>
+        implements GraphQLQueryResolver, GraphQLMutationResolver, StateEntityManagerOperation<View, Entity,Id> {
 
     private Manager manager;
     public GraphQueryManager(Manager manager){
@@ -35,22 +36,23 @@ public abstract class GraphQueryManager<Manager extends StoredStateEntityManager
         return manager.find(id);
     }
 
-    public PagedData<View> find(PageContext context) {
-        return manager.find(context);
-    }
-
-    public PagedData<View> find(Predicate predicate, PageContext context) {
-        return manager.find(predicate, context);
-    }
-
     @Override
-    public View transformEntity(StoredEntity entity) {
+    public Optional<View> transformEntity(Optional<Entity> entity) {
         return manager.transformEntity(entity);
     }
 
     @Override
-    public StoredEntity transformView(View entity) {
+    public Optional<Entity> transformView(Optional<View> entity) {
         return manager.transformView(entity);
+    }
+
+    @Override
+    public ValidationStatus validateEntity(Entity entity) {
+        return manager.validateEntity(entity);
+    }
+
+    public PagedData<View> find(PageContext context) {
+        return manager.find(context);
     }
 
     @Override
@@ -61,6 +63,11 @@ public abstract class GraphQueryManager<Manager extends StoredStateEntityManager
     @Override
     public DataMap process(View view) {
         return DataMap.empty();
+    }
+
+    @Override
+    public ValidationStatus validateView(View view) {
+        return manager.validateView(view);
     }
 
 }

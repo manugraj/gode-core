@@ -51,6 +51,6 @@ public abstract class JPAEntityRepository<Entity extends JPAEntity<Id>, Id exten
 
     @Override
     public PagedData<Entity> findAll(Predicate predicate, PageContext context) {
-        return PageUtils.getData( pc-> repo.findAll(predicate, pc), context);
+        return PageUtils.getData( pc-> repo.findAll(predicate, pc), context,predicate);
     }
 }

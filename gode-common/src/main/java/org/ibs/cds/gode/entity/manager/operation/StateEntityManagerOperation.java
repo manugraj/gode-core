@@ -6,6 +6,7 @@ import org.ibs.cds.gode.entity.view.EntityView;
 import org.ibs.cds.gode.pagination.PagedData;
 
 import java.io.Serializable;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public interface StateEntityManagerOperation<View extends EntityView<Id>, Entity extends TypicalEntity<Id>, Id extends Serializable> extends ViewEntityManagerOperation<View, Id> {
@@ -16,9 +17,9 @@ public interface StateEntityManagerOperation<View extends EntityView<Id>, Entity
 
     View find(Id id);
 
-    View transformEntity(Entity entity);
+    Optional<View> transformEntity(Optional<Entity> entity);
 
-    Entity transformView(View entity);
+    Optional<Entity> transformView(Optional<View> entity);
 
     default ValidationStatus validateEntity(Entity entity){
         return ValidationStatus.ok();
@@ -27,11 +28,11 @@ public interface StateEntityManagerOperation<View extends EntityView<Id>, Entity
     boolean deactivate(Id id);
 
     default PagedData<View> transformEntityPage(PagedData<Entity> pagedData) {
-        return new PagedData(pagedData.stream().map(this::transformEntity).collect(Collectors.toList()), pagedData.getContext());
+        return new PagedData(pagedData.stream().map(Optional::ofNullable).map(this::transformEntity).collect(Collectors.toList()), pagedData.getContext());
     }
 
     default PagedData<Entity> transformViewPage(PagedData<View> pagedData) {
-        return new PagedData(pagedData.stream().map(this::transformView).collect(Collectors.toList()), pagedData.getContext());
+        return new PagedData(pagedData.stream().map(Optional::ofNullable).map(this::transformView).collect(Collectors.toList()), pagedData.getContext());
     }
 
 }

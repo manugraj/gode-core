@@ -1,5 +1,6 @@
 package org.ibs.cds.gode.entity.type;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.querydsl.core.annotations.QuerySupertype;
 import org.ibs.cds.gode.entity.store.StoreEntity;
 import org.ibs.cds.gode.entity.store.StoreType;
@@ -18,7 +19,7 @@ public abstract class MongoEntity<Id extends Serializable> extends StoreEntity<I
     private Long appId;
     private Boolean active;
 
-    @Override
+    @Override @JsonIgnore
     public StoreType getStoreType() {
         return StoreType.MONGODB;
     }

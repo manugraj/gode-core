@@ -1,5 +1,6 @@
 package org.ibs.cds.gode.entity.type;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.ibs.cds.gode.entity.store.StoreEntity;
 import org.ibs.cds.gode.entity.store.StoreType;
 import org.ibs.cds.gode.util.EntityUtil;
@@ -71,7 +72,7 @@ public abstract class JPAEntity<Id extends Serializable> extends StoreEntity<Id>
                 Objects.equals(appId, that.appId);
     }
 
-    @Override
+    @Override @JsonIgnore
     public StoreType getStoreType() {
         return StoreType.JPA;
     }

@@ -1,17 +1,21 @@
 package org.ibs.cds.gode.entity.cache;
 
-import org.ibs.cds.gode.entity.store.StoreEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.ibs.cds.gode.util.EntityUtil;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
-public abstract class CacheEntity<Id extends Serializable> extends StoreEntity<Id> {
+public abstract class CacheEntity<Id extends Serializable> implements CacheableEntity<Id> {
+
+    public transient boolean validated;
+
     private Date createdOn;
     private Date updatedOn;
     private Long appId;
     private Boolean active;
+
 
     public Boolean isActive() {
         return active;
@@ -67,4 +71,16 @@ public abstract class CacheEntity<Id extends Serializable> extends StoreEntity<I
                 Objects.equals(updatedOn, that.updatedOn) &&
                 Objects.equals(appId, that.appId);
     }
+
+    @JsonIgnore
+    public boolean isValidated() {
+        return validated;
+    }
+
+    @JsonIgnore
+    public void setValidated(boolean validated) {
+        this.validated = validated;
+    }
+
+
 }

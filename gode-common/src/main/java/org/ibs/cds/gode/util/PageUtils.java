@@ -1,7 +1,8 @@
 package org.ibs.cds.gode.util;
 
 
-import org.ibs.cds.gode.entity.cache.CacheEntity;
+import com.querydsl.core.types.Predicate;
+import org.ibs.cds.gode.entity.cache.CacheableEntity;
 import org.ibs.cds.gode.entity.type.TypicalEntity;
 import org.ibs.cds.gode.pagination.*;
 import org.springframework.data.domain.Page;
@@ -18,6 +19,10 @@ import java.util.stream.Collectors;
 public class PageUtils {
 
     public static <T> PagedData<T> fromPage(Page<T> page) {
+        return fromPage(page, null);
+    }
+
+    public static <T> PagedData<T> fromPage(Page<T> page, Predicate predicate) {
         PagedData<T> pagedData = new PagedData<T>();
         pagedData.setData(page.getContent());
         ResponsePageContext ctx = new ResponsePageContext(page.getPageable().getPageSize());
@@ -29,7 +34,7 @@ public class PageUtils {
         Set<Sortable> sortOrders = new HashSet<>();
         page.getSort().forEach(order->sortOrders.add(fromSort(order)));
         ctx.setSortOrder(sortOrders);
-        pagedData.setContext(new QueryContext(ctx, null));
+        pagedData.setContext(new QueryContext(ctx, predicate == null ? null : predicate.toString()));
         return pagedData;
     }
 
@@ -43,6 +48,10 @@ public class PageUtils {
 
     public static <T extends TypicalEntity<?>> PagedData<T> getData(Function<PageRequest, Page<T>> function, PageContext ctx) {
         return fromPage(function.apply(toBaseRequest(ctx)));
+    }
+
+    public static <T extends TypicalEntity<?>> PagedData<T> getData(Function<PageRequest, Page<T>> function, PageContext ctx, Predicate predicate) {
+        return fromPage(function.apply(toBaseRequest(ctx)),predicate);
     }
 
     public static <T extends TypicalEntity<?>,R> PagedData<R> transform(PagedData<T> data, Function<T,R> transformer) {
@@ -88,7 +97,7 @@ public class PageUtils {
         return new PagedData<>();
     }
 
-    public static <T extends CacheEntity<?>> PagedData<T> getData(Iterable<T> data, long totalCount, PageContext context){
+    public static <T extends CacheableEntity<?>> PagedData<T> getData(Iterable<T> data, long totalCount, PageContext context){
         PagedData<T> page = new PagedData<>();
         int pageSize = context.getPageSize();
         int pageNo = context.getPageNumber();
@@ -102,4 +111,5 @@ public class PageUtils {
         page.setContext(new QueryContext(pageContext, null));
         return page;
     }
+
 }

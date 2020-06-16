@@ -1,31 +1,16 @@
 package org.ibs.cds.gode.entity.type;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.ibs.cds.gode.util.EntityUtil;
 
 import java.io.Serializable;
-import java.time.OffsetDateTime;
 import java.util.Date;
-import java.util.Objects;
 
-public abstract class TypicalEntity<Id extends Serializable> implements Serializable{
-
-    public transient boolean validated;
+public interface TypicalEntity<Id extends Serializable> extends Serializable{
 
     @JsonIgnore
     public abstract Id getId();
 
     public abstract void setId(Id id) ;
-
-    @JsonIgnore
-    public boolean isValidated() {
-        return validated;
-    }
-
-    @JsonIgnore
-    public void setValidated(boolean validated) {
-        this.validated = validated;
-    }
 
     public abstract Boolean isActive();
 
@@ -43,13 +28,7 @@ public abstract class TypicalEntity<Id extends Serializable> implements Serializ
 
     public abstract void setAppId(Long appId);
 
-    @Override
-    public int hashCode() {
-        return EntityUtil.hashCode(this);
-    }
+    void setValidated(boolean validated);
 
-    @Override
-    public String toString() {
-        return EntityUtil.toString(this);
-    }
+    boolean isValidated();
 }

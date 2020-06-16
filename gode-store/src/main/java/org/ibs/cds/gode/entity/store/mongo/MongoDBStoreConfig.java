@@ -5,6 +5,7 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import org.ibs.cds.gode.entity.codec.DateToOffsetDateTimeConverter;
 import org.ibs.cds.gode.entity.codec.OffsetDateTimeToDateConverter;
+import org.ibs.cds.gode.entity.store.MarkMongoRepo;
 import org.ibs.cds.gode.entity.store.condition.MongoDBEnabler;
 import org.ibs.cds.gode.system.GodeAppEnvt;
 import org.ibs.cds.gode.system.GodeConstant;
@@ -26,17 +27,21 @@ import java.util.List;
 
 @Configuration
 @Conditional(MongoDBEnabler.class)
-@EnableMongoRepositories(basePackages = GodeConstant.ENTITY_BASE_PACKAGE_NAME)
+@EnableMongoRepositories(basePackages = GodeConstant.ENTITY_BASE_PACKAGE_NAME,
+        includeFilters = {
+                @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = MarkMongoRepo.class)
+        }
+)
 @ComponentScan(GodeConstant.GODE_BASE_PACKAGE_NAME)
 @PropertySource(GodeAppEnvt.GODE_PROPERTIES)
 @EntityScan(GodeConstant.ENTITY_BASE_PACKAGE_ALL)
-public class MongoDBStoreConfig extends AbstractMongoClientConfiguration  {
+public class MongoDBStoreConfig extends AbstractMongoClientConfiguration {
 
     private final Environment environment;
-    private final List<Converter<?,?>> codecList;
+    private final List<Converter<?, ?>> codecList;
 
     @Autowired
-    public MongoDBStoreConfig(Environment environment){
+    public MongoDBStoreConfig(Environment environment) {
         this.environment = environment;
         codecList = List.of(
                 new DateToOffsetDateTimeConverter(),
@@ -60,6 +65,7 @@ public class MongoDBStoreConfig extends AbstractMongoClientConfiguration  {
         return new MongoTemplate(mongoDbFactory());
 
     }
+
     @Override
     public MongoCustomConversions customConversions() {
         return new MongoCustomConversions(codecList);

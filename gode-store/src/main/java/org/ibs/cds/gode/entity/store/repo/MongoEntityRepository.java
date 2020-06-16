@@ -50,6 +50,6 @@ public abstract class MongoEntityRepository<Entity extends MongoEntity<Id>, Id e
 
     @Override
     public PagedData<Entity> findAll(Predicate predicate, PageContext context) {
-        return PageUtils.getData( pc-> repo.findAll(predicate, pc), context);
+        return PageUtils.getData( pc-> repo.findAll(predicate, pc), context, predicate);
     }
 }

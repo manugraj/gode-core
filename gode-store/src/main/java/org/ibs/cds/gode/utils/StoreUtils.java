@@ -19,7 +19,7 @@ public class StoreUtils {
                         new JavaArtifact("Entity", "javax.persistence"),
                         new JavaArtifact("JPAEntity", ENTITY_PATH),
                         new JavaArtifact("JPAEntityRepo", REPO_PATH),
-                        new JavaArtifact("MarkJPARepo","org.ibs.cds.gode.entity.store"),
+                        new JavaArtifact("@MarkJPARepo","org.ibs.cds.gode.entity.store"),
                         new JavaArtifact("JPAEntityRepository",REPO_PATH),
                         new JavaArtifact("Id","javax.persistence"),
                         type

@@ -34,7 +34,7 @@ public class PageUtils {
         Set<Sortable> sortOrders = new HashSet<>();
         page.getSort().forEach(order->sortOrders.add(fromSort(order)));
         ctx.setSortOrder(sortOrders);
-        pagedData.setContext(new QueryContext(ctx, predicate.toString()));
+        pagedData.setContext(new QueryContext(ctx, predicate == null ? null : predicate.toString()));
         return pagedData;
     }
 

@@ -43,6 +43,7 @@
         <mongo.driver>4.0.4</mongo.driver>
         <lombok>1.18.12</lombok>
         <thumbnailator.version>0.4.8</thumbnailator.version>
+        <h2.version>1.4.197</h2.version>
     </properties>
 
     <dependencyManagement>

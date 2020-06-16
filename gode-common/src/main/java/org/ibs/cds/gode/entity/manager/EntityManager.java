@@ -39,19 +39,19 @@ public abstract class EntityManager<View extends EntityView<Id>, Entity extends 
     protected static final String LOG_TEMPLATE = "Action : {} | Arguments: {}";
     protected static final String LOG_TEMPLATE2 = "Action : {} | Arguments: {},{}";
 
-    private Map<RepoType, Repo<Entity, Id>> processRepo;
+    protected Map<RepoType, Repo<Entity, Id>> repoContainer;
 
     public <StoreRepo extends StoreEntityRepo<Entity, Id>, CacheRepo extends CacheableEntityRepo<Entity, Id>> EntityManager(
             StoreRepo storeEntityRepo,
             CacheRepo cacheableEntityRepo) {
-        processRepo = new EnumMap<>(RepoType.class);
+        repoContainer = new EnumMap<>(RepoType.class);
         populateRepo(storeEntityRepo);
         populateRepo(cacheableEntityRepo);
     }
 
     private void populateRepo(Repo<Entity, Id> repo){
         if(repo !=null){
-            processRepo.put(repo.type(), repo);
+            repoContainer.put(repo.type(), repo);
         }
     }
 
@@ -91,7 +91,7 @@ public abstract class EntityManager<View extends EntityView<Id>, Entity extends 
 
 
     protected <T, A> T operateAll(A argument, BiFunction<Repo<Entity, Id>, A, T> perform) {
-        return this.processRepo.values().stream()
+        return this.repoContainer.values().stream()
                 .map(repo -> perform.apply(repo, argument))
                 .filter(Objects::nonNull)
                 .reduce((first, second) -> second)
@@ -99,7 +99,7 @@ public abstract class EntityManager<View extends EntityView<Id>, Entity extends 
     }
 
     protected <T, A> T operateFirst(A argument, BiFunction<Repo<Entity, Id>, A, T> perform) {
-        return this.processRepo.values().stream()
+        return this.repoContainer.values().stream()
                 .map(repo -> perform.apply(repo, argument))
                 .filter(Objects::nonNull)
                 .findFirst()
@@ -138,7 +138,11 @@ public abstract class EntityManager<View extends EntityView<Id>, Entity extends 
     @Override
     public View find(Id id) {
         log.debug(LOG_TEMPLATE, FIND_BY_ID, id);
-        return transformEntity(operateFirst(id, (r, i) -> r.findById(i))).orElse(null);
+        return transformEntity(findById(id)).orElse(null);
+    }
+
+    protected Optional<Entity> findById(Id id) {
+        return operateFirst(id, (r, i) -> r.findById(i));
     }
 
     @Override
@@ -154,7 +158,7 @@ public abstract class EntityManager<View extends EntityView<Id>, Entity extends 
 
     public PagedData<View> find(Predicate predicate, PageContext pageContext) {
         log.debug(LOG_TEMPLATE2, FIND_BY_PREDICATE, predicate, pageContext);
-        Repo<Entity, Id> entityIdRepo = processRepo.get(RepoType.STORE);
+        Repo<Entity, Id> entityIdRepo = repoContainer.get(RepoType.STORE);
         if (entityIdRepo != null) {
             return transformEntityPage(((StoreEntityRepo<Entity, Id>) entityIdRepo).findAll(predicate, pageContext));
         }

@@ -16,23 +16,28 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>9</source>
-                    <target>9</target>
+                    <source>11</source>
+                    <target>11</target>
                 </configuration>
             </plugin>
         </plugins>
     </build>
     <dependencies>
-    <dependency>
-        <groupId>org.ibs.cds.gode</groupId>
-        <artifactId>gode-common</artifactId>
-        <version>${gode.version}</version>
-    </dependency>
-    <dependency>
-        <groupId>org.apache.kafka</groupId>
-        <artifactId>kafka-clients</artifactId>
-        <version>2.5.0</version>
-    </dependency>
-</dependencies>
+        <dependency>
+            <groupId>org.ibs.cds.gode</groupId>
+            <artifactId>gode-common</artifactId>
+            <version>${gode.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ibs.cds.gode</groupId>
+            <artifactId>gode-api</artifactId>
+            <version>${gode.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-clients</artifactId>
+            <version>2.5.0</version>
+        </dependency>
+    </dependencies>
 
 </project>

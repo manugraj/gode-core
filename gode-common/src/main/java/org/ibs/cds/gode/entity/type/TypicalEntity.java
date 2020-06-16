@@ -31,4 +31,9 @@ public interface TypicalEntity<Id extends Serializable> extends Serializable{
     void setValidated(boolean validated);
 
     boolean isValidated();
+
+    @JsonIgnore
+    public default String getClassifier(){
+        return this == null ? null : this.getClass().getSimpleName();
+    }
 }

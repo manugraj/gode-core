@@ -6,58 +6,68 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.ibs.cds.gode.exception.KnownException;
+import org.ibs.cds.gode.queue.manager.QueueDataParser;
 import org.ibs.cds.gode.queue.manager.QueueSubscriber;
-import org.ibs.cds.gode.queue.manager.kafka.serialisation.RationalJsonDeserializer;
 import org.ibs.cds.gode.util.Assert;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 @Slf4j
-public class KafkaSubscriber<T> implements QueueSubscriber<T, KafkaInitialiseProperties> {
+public class KafkaSubscriber<T> implements QueueSubscriber<T, KafkaProperties> {
 
-    private KafkaConsumer<String, T> consumer;
+    private KafkaConsumer<String,String> consumer;
+    private QueueDataParser parser;
 
     @Override
-    public boolean init(KafkaInitialiseProperties properties, Class<? extends RationalJsonDeserializer<T>> classType) {
-        consumer = new KafkaConsumer(properties.subscriberProperties(classType));
+    public boolean init(KafkaProperties properties) {
+        consumer = new KafkaConsumer(properties.subscriberProperties());
+        parser = new QueueDataParser();
         return false;
     }
 
     @Override
-    public void subscribe(String context, int pollInterval, Consumer<T> consumptionFunction) {
+    public void subscribe(String context, int pollInterval, Consumer<Optional<T>> consumptionFunction) {
         Assert.notNull("Subscriber is not initialised", consumer);
         consumer.subscribe(List.of(context));
         CompletableFuture
-                .runAsync(() -> this.startSubscription(pollInterval == 0 ? 60 : pollInterval, consumptionFunction))
-                .whenComplete((s,e)->{
-                    if(e != null){
-                        log.error("Error thrown while subscription: {}", ExceptionUtils.getStackTrace(e));
-                    }
-                });
+                .runAsync(() -> this.startSubscription( pollInterval < 1 ? 60 : pollInterval, consumptionFunction))
+                .whenComplete(logError());
         log.info("Subscription for {} started", context);
     }
 
+    @NotNull
+    protected BiConsumer<Void, Throwable> logError() {
+        return (s,e)->{
+            if(e != null) log.error("Error thrown while subscription: {}", ExceptionUtils.getStackTrace(e));
+        };
+    }
+
     @Override
-    public void subscribe(String topic, Consumer<T> consumptionFunction) {
+    public void subscribe(String topic, Consumer<Optional<T>> consumptionFunction) {
         subscribe(topic, 60, consumptionFunction);
     }
 
-    private void startSubscription(int pollInterval, Consumer<T> consumptionFunction) {
+    private void startSubscription(int pollInterval, Consumer<Optional<T>> consumptionFunction) {
         while (true) {
             consumption(pollInterval, consumptionFunction);
         }
     }
 
-    private void consumption(int pollInterval, Consumer<T> consumptionFunction) {
+    private void consumption(int pollInterval, Consumer<Optional<T>> consumptionFunction) {
+
         try {
-            ConsumerRecords<String, T> records = consumer.poll(Duration.ofSeconds(pollInterval));
+            ConsumerRecords<String, String> records = consumer.poll(Duration.ofSeconds(pollInterval));
             log.debug("Poll done for queue, received count:{}", records.count());
-            for (ConsumerRecord<String, T> record : records) {
+            for (ConsumerRecord<String, String> record : records) {
                 log.debug("Consuming record from queue: offset = {}, value = {}", record.offset(), record.value());
-                consumptionFunction.accept(record.value());
+                 T t =  parser.read(record.value());
+                 consumptionFunction.accept(Optional.ofNullable(t));
                 log.debug("Consumption of record complete");
             }
             consumer.commitSync();

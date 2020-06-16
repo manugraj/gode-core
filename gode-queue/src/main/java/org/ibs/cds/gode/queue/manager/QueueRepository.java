@@ -1,11 +1,29 @@
 package org.ibs.cds.gode.queue.manager;
 
-import org.ibs.cds.gode.queue.manager.kafka.serialisation.RationalJsonDeserializer;
-import org.springframework.data.repository.NoRepositoryBean;
+import lombok.Data;
+import org.ibs.cds.gode.queue.manager.kafka.KafkaEnabler;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Conditional;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 
-@NoRepositoryBean
-public interface QueueRepository<PusherProperties extends QueueRepositoryProperties.PusherProperties,SubscriberProperties extends QueueRepositoryProperties.SubscriberProperties> {
+@Configuration
+@Conditional(KafkaEnabler.class)
+@Data
+public class QueueRepository {
+    private final QueueRepo queueRepo;
+    private final QueueRepoProperties.PusherProperties pusherProperties;
+    private final QueueRepoProperties.SubscriberProperties subscriberProperties;
+    private final String queuePrefix;
 
-    QueuePusher pusher(PusherProperties properties);
-    QueueSubscriber consumer(SubscriberProperties properties, Class<? extends RationalJsonDeserializer> classType);
+    @Autowired
+    public QueueRepository(QueueRepo queueRepo,
+                           QueueRepoProperties.PusherProperties pusherProperties,
+                           QueueRepoProperties.SubscriberProperties subscriberProperties,
+                           Environment environment) {
+        this.queueRepo = queueRepo;
+        this.pusherProperties = pusherProperties;
+        this.subscriberProperties = subscriberProperties;
+        this.queuePrefix = environment.getProperty("gode.queue.context.prefix","gode-");
+    }
 }

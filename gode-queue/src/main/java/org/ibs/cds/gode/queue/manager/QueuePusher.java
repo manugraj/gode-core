@@ -1,7 +1,9 @@
 package org.ibs.cds.gode.queue.manager;
 
-public interface QueuePusher<V,T extends QueueRepositoryProperties.PusherProperties> {
+import org.ibs.cds.gode.exception.GodeQueuePushFailedException;
+
+public interface QueuePusher<V,T extends QueueRepoProperties.PusherProperties> {
     boolean init(T properties);
-    boolean send(String context, Object message);
+    boolean send(String context, V message) throws GodeQueuePushFailedException;
     boolean send(Queueable message);
 }

@@ -5,9 +5,7 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
-import org.ibs.cds.gode.queue.manager.QueueRepositoryProperties;
-import org.ibs.cds.gode.queue.manager.kafka.serialisation.RationalJsonDeserializer;
-import org.ibs.cds.gode.queue.manager.kafka.serialisation.RationalJsonSerializer;
+import org.ibs.cds.gode.queue.manager.QueueRepoProperties;
 import org.ibs.cds.gode.system.GodeConstant;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -22,7 +20,7 @@ import java.util.Properties;
 @Conditional(KafkaEnabler.class)
 @PropertySource(GodeConstant.GODE_PROPERTIES)
 @Data
-public class KafkaInitialiseProperties  implements QueueRepositoryProperties.SubscriberProperties, QueueRepositoryProperties.PusherProperties {
+public class KafkaProperties implements QueueRepoProperties.SubscriberProperties, QueueRepoProperties.PusherProperties {
 
     private String servers;
     private String groupId;
@@ -41,7 +39,7 @@ public class KafkaInitialiseProperties  implements QueueRepositoryProperties.Sub
     public Properties pusherProperties(){
         Properties properties = generalProperties();
         properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, RationalJsonSerializer.class);
+        properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         securityProperties(properties);
         return properties;
     }
@@ -71,11 +69,11 @@ public class KafkaInitialiseProperties  implements QueueRepositoryProperties.Sub
     }
 
     @Override
-    public Properties subscriberProperties(Class<? extends RationalJsonDeserializer> deserialiser) {
+    public Properties subscriberProperties() {
         Properties properties = generalProperties();
         properties.put(ConsumerConfig.GROUP_ID_CONFIG, this.groupId);
         properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, deserialiser);
+        properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         securityProperties(properties);
         return properties;
     }

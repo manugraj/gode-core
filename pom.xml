@@ -13,11 +13,12 @@
         <module>gode-cache</module>
         <module>gode-store</module>
         <module>gode-api</module>
-        <module>gode-auth</module>
         <module>gode-test</module>
         <module>gode-media</module>
         <module>gode-queue</module>
         <module>gode-streams</module>
+        <module>gode-resource</module>
+        <module>gode-auth</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>

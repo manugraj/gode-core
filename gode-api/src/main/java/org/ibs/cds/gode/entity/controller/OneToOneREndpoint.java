@@ -24,26 +24,18 @@ public abstract class OneToOneREndpoint<View extends RelationshipView<A,B>, Enti
         this.manager = manager;
     }
 
-    @PostMapping(path = "/from")
-    @ApiOperation("Find relationships with start node")
     public Response<View> findRelationshipTo(@RequestBody Request<A> asideRequest){
         return Executor.run((Request<A> a)->(OneToOneRManager<View, Entity, A,B,aid,bid> m)->m.findRelationshipFrom(a.getData()), asideRequest ,manager, KnownException.QUERY_FAILED, "/from");
     }
 
-    @PostMapping(path = "/to")
-    @ApiOperation("Find relationships with end node")
     public Response<View> findRelationshipFrom(@RequestBody Request<B> bsideRequest){
         return Executor.run((Request<B> b)->(OneToOneRManager<View, Entity, A,B,aid,bid> m)->m.findRelationshipTo(b.getData()), bsideRequest ,manager, KnownException.QUERY_FAILED, "/to");
     }
 
-    @PostMapping(path = "/relation")
-    @ApiOperation("Find relationship between two nodes")
     public Response<View> findRelationship(@RequestBody Request<AB<A,B>> absideRequest){
         return Executor.run((Request<AB<A,B>> a)->(OneToOneRManager<View, Entity, A,B,aid,bid> m)->m.findRelationship(a.getData().getA(), a.getData().getB()), absideRequest ,manager, KnownException.QUERY_FAILED, "/relation");
     }
 
-    @PostMapping(path = "/any")
-    @ApiOperation("Find any relationship with given start node or end node")
     public Response<View> findAnyRelationship(@RequestBody Request<AB<A,B>> absideRequest){
         return Executor.run((Request<AB<A,B>> a)->(OneToOneRManager<View, Entity, A,B,aid,bid> m)->m.findAnyRelationship(a.getData().getA(), a.getData().getB()), absideRequest ,manager, KnownException.QUERY_FAILED, "/any");
     }

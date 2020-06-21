@@ -28,20 +28,14 @@ public abstract class ManyToAnyREndpoint<View extends RelationshipView<A,B>, Ent
         this.manager = manager;
     }
 
-    @PostMapping(path = "/from")
-    @ApiOperation("Find relationships with start node")
     public Response<PagedData<View>> findRelationshipTo(@RequestBody Request<A> asideRequest, @ModelAttribute APIArgument argument){
         return Executor.run((Request<A> a)->(ManyToAnyRManager<View, Entity, A,B,aid,bid> m)->m.findRelationshipFrom(a.getData(), PageContext.fromAPI(argument)), asideRequest ,manager, KnownException.QUERY_FAILED, "/from");
     }
 
-    @PostMapping(path = "/to")
-    @ApiOperation("Find relationships with end node")
     public Response<PagedData<View>> findRelationshipFrom(@RequestBody Request<B> bsideRequest, @ModelAttribute APIArgument argument){
         return Executor.run((Request<B> a)->(ManyToAnyRManager<View, Entity, A,B,aid,bid> m)->m.findRelationshipTo(a.getData(), PageContext.fromAPI(argument)), bsideRequest ,manager, KnownException.QUERY_FAILED, "/to");
     }
 
-    @PostMapping(path = "/relation")
-    @ApiOperation("Find relationship between two nodes")
     public Response<View> findAnyRelationship(@RequestBody Request<AB<A,B>> absideRequest){
         return Executor.run((Request<AB<A,B>> a)->(ManyToAnyRManager<View, Entity, A,B,aid,bid> m)->m.findRelationship(a.getData().getA(), a.getData().getB()), absideRequest ,manager, KnownException.QUERY_FAILED, "/relation");
     }

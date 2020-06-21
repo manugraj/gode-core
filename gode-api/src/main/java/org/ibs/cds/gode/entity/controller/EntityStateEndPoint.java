@@ -20,7 +20,7 @@ import java.io.Serializable;
 public class EntityStateEndPoint<View extends EntityView<Id>, Entity extends TypicalEntity<Id>, Manager extends EntityManager<View, Entity, Id>, Id extends Serializable>
         extends EntityProcessEndpoint<View, Manager, Id> {
 
-    private Manager manager;
+    protected Manager manager;
     public EntityStateEndPoint(Manager manager) {
         super(manager);
         this.manager = manager;

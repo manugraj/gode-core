@@ -7,10 +7,15 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 
 import java.io.Serializable;
+import java.util.Optional;
 import java.util.stream.Stream;
 @NoRepositoryBean
 public interface MongoDBSpringRepo<Entity extends MongoEntity<Id>,Id extends Serializable> extends MongoRepository<Entity, Id> {
     Stream<Entity> findByActive(boolean active);
     Page<Entity> findByActive(boolean active, Pageable pageable);
-    Entity findByAppId(Long appId);
+    Optional<Entity> findByAppId(Long appId);
+
+    Iterable<Entity> findAllById(Iterable<Id> iterable);
+
+    Optional<Entity> findById(Id id);
 }

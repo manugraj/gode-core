@@ -17,18 +17,18 @@ public abstract class MongoEntity<Id extends Serializable> extends StoreEntity<I
     private Date createdOn;
     private Date updatedOn;
     private Long appId;
-    private Boolean active;
+    private boolean active;
 
     @Override @JsonIgnore
     public StoreType getStoreType() {
         return StoreType.MONGODB;
     }
 
-    public Boolean isActive() {
+    public boolean isActive() {
         return active;
     }
 
-    public void setActive(Boolean active) {
+    public void setActive(boolean active) {
         this.active = active;
     }
 

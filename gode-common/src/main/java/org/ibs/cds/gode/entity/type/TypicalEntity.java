@@ -8,32 +8,32 @@ import java.util.Date;
 public interface TypicalEntity<Id extends Serializable> extends Serializable{
 
     @JsonIgnore
-    public abstract Id getId();
+    Id getId();
 
-    public abstract void setId(Id id) ;
+    void setId(Id id) ;
 
-    public abstract Boolean isActive();
+    boolean isActive();
 
-    public abstract void setActive(Boolean active);
+    void setActive(boolean active);
 
-    public abstract Date getCreatedOn();
+    Date getCreatedOn();
 
-    public abstract void setCreatedOn(Date createdOn) ;
+    void setCreatedOn(Date createdOn) ;
 
-    public abstract Date getUpdatedOn();
+    Date getUpdatedOn();
 
-    public abstract void setUpdatedOn(Date updatedOn);
+    void setUpdatedOn(Date updatedOn);
 
-    public abstract Long getAppId();
+    Long getAppId();
 
-    public abstract void setAppId(Long appId);
+    void setAppId(Long appId);
 
     void setValidated(boolean validated);
 
     boolean isValidated();
 
     @JsonIgnore
-    public default String getClassifier(){
+    default String getClassifier(){
         return this == null ? null : this.getClass().getSimpleName();
     }
 }

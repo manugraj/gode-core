@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 @NoRepositoryBean
@@ -14,5 +16,7 @@ public interface JPASpringRepo<Entity extends JPAEntity<Id>,Id extends Serializa
 
     Stream<Entity> findByActive(boolean active);
     Page<Entity> findByActive(boolean active, Pageable pageable);
-    Entity findByAppId(Long appId);
+    Optional<Entity> findByAppId(Long appId);
+    List<Entity> findAllById(Iterable<Id> ids);
+    Optional<Entity> findById(Id id);
 }

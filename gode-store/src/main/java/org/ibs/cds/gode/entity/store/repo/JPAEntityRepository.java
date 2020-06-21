@@ -1,13 +1,14 @@
 package org.ibs.cds.gode.entity.store.repo;
 
 import com.querydsl.core.types.Predicate;
-import org.ibs.cds.gode.entity.store.StoreEntity;
+import org.apache.commons.collections4.CollectionUtils;
 import org.ibs.cds.gode.entity.type.JPAEntity;
 import org.ibs.cds.gode.pagination.PageContext;
 import org.ibs.cds.gode.pagination.PagedData;
 import org.ibs.cds.gode.util.PageUtils;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -20,13 +21,18 @@ public abstract class JPAEntityRepository<Entity extends JPAEntity<Id>, Id exten
     }
 
     @Override
-    public Entity findByAppId(Long appId) {
-        return repo.findByAppId(appId);
+    public Optional<Entity> findByAppId(Long appId) {
+        return repo.findByAppId(appId).filter(JPAEntity::isActive);
     }
 
     @Override
     public Optional<Entity> findById(Id id) {
-        return repo.findById(id);
+        return repo.findById(id).filter(JPAEntity::isActive);
+    }
+
+    @Override
+    public List<Entity> findByIdIn(List<Id> id) {
+        return CollectionUtils.isEmpty(id) ? List.of() :this.repo.findAllById(()->id.iterator());
     }
 
     @Override

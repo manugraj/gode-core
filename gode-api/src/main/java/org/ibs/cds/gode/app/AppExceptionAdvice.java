@@ -6,6 +6,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.ibs.cds.gode.exception.Error;
 import org.ibs.cds.gode.exception.GodeException;
+import org.ibs.cds.gode.exception.GodeRuntimeException;
 import org.ibs.cds.gode.status.BinaryStatus;
 import org.ibs.cds.gode.web.context.ReturnMessage;
 import org.slf4j.Logger;
@@ -236,7 +237,13 @@ public class AppExceptionAdvice {
     }
 
     @ExceptionHandler(GodeException.class)
-    public ResponseEntity<ReturnMessage> handleWynssException(GodeException ex) {
+    public ResponseEntity<ReturnMessage> handleGodeException(GodeException ex) {
+        logException(ex);
+        return newResponseEntity(Pair.of(ex.getError(), HttpStatus.BAD_REQUEST));
+    }
+
+    @ExceptionHandler(GodeRuntimeException.class)
+    public ResponseEntity<ReturnMessage> handleGodeRuntimeException(GodeException ex) {
         logException(ex);
         return newResponseEntity(Pair.of(ex.getError(), HttpStatus.BAD_REQUEST));
     }

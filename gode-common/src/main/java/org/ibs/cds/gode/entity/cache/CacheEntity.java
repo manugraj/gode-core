@@ -14,14 +14,14 @@ public abstract class CacheEntity<Id extends Serializable> implements CacheableE
     private Date createdOn;
     private Date updatedOn;
     private Long appId;
-    private Boolean active;
+    private boolean active;
 
 
-    public Boolean isActive() {
+    public boolean isActive() {
         return active;
     }
 
-    public void setActive(Boolean active) {
+    public void setActive(boolean active) {
         this.active = active;
     }
 

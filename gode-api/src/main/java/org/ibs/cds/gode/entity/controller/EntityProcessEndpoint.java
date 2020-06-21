@@ -2,7 +2,6 @@ package org.ibs.cds.gode.entity.controller;
 
 import org.ibs.cds.gode.entity.generic.DataMap;
 import org.ibs.cds.gode.entity.manager.EntityViewManager;
-import org.ibs.cds.gode.entity.manager.operation.ViewEntityManagerOperation;
 import org.ibs.cds.gode.entity.operation.Executor;
 import org.ibs.cds.gode.entity.operation.Logic;
 import org.ibs.cds.gode.entity.validation.ValidationStatus;

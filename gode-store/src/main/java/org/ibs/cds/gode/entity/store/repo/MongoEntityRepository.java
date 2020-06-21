@@ -1,31 +1,35 @@
 package org.ibs.cds.gode.entity.store.repo;
 
 import com.querydsl.core.types.Predicate;
+import org.apache.commons.collections4.CollectionUtils;
 import org.ibs.cds.gode.entity.type.MongoEntity;
 import org.ibs.cds.gode.pagination.PageContext;
 import org.ibs.cds.gode.pagination.PagedData;
 import org.ibs.cds.gode.util.PageUtils;
+import org.ibs.cds.gode.util.StreamUtils;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public abstract class MongoEntityRepository<Entity extends MongoEntity<Id>, Id extends Serializable,Repo extends MongoEntityRepo<Entity,Id>> implements StoreEntityRepo<Entity,Id> {
 
-    private Repo repo;
+    protected Repo repo;
 
     public MongoEntityRepository(Repo repo) {
         this.repo = repo;
     }
 
     @Override
-    public Entity findByAppId(Long appId) {
-        return repo.findByAppId(appId);
+    public Optional<Entity> findByAppId(Long appId) {
+        return repo.findByAppId(appId).filter(MongoEntity::isActive);
     }
 
     @Override
     public Optional<Entity> findById(Id id) {
-        return repo.findById(id);
+        return repo.findById(id).filter(MongoEntity::isActive);
     }
 
     @Override
@@ -51,5 +55,10 @@ public abstract class MongoEntityRepository<Entity extends MongoEntity<Id>, Id e
     @Override
     public PagedData<Entity> findAll(Predicate predicate, PageContext context) {
         return PageUtils.getData( pc-> repo.findAll(predicate, pc), context, predicate);
+    }
+
+    @Override
+    public List<Entity> findByIdIn(List<Id> id) {
+        return CollectionUtils.isEmpty(id) ? List.of() : StreamUtils.from(this.repo.findAllById(()->id.iterator())).collect(Collectors.toList());
     }
 }

@@ -14,12 +14,17 @@ import org.ibs.cds.gode.exception.KnownException;
 import org.ibs.cds.gode.pagination.PageContext;
 import org.ibs.cds.gode.pagination.PagedData;
 import org.ibs.cds.gode.status.BinaryStatus;
+import org.ibs.cds.gode.system.AppId;
 import org.ibs.cds.gode.util.PageUtils;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Slf4j
 public abstract class EntityManager<View extends EntityView<Id>, Entity extends TypicalEntity<Id>,
@@ -34,12 +39,13 @@ public abstract class EntityManager<View extends EntityView<Id>, Entity extends 
     protected static final String FIND_BY_APPID = "findByAppId";
     protected static final String VALIDATE = "validate";
     protected static final String FIND_ALL = "findAll";
+    protected static final String FIND_ALL_BY_ID = "findAllById";
     protected static final String FIND_BY_PREDICATE = "findByPredicate";
     protected static final String DEACTIVATE = "deactivate";
     protected static final String LOG_TEMPLATE = "Action : {} | Arguments: {}";
     protected static final String LOG_TEMPLATE2 = "Action : {} | Arguments: {},{}";
 
-    protected EntityRepository<Entity,Id> repository;
+    protected EntityRepository<Entity, Id> repository;
 
     public <StoreRepo extends StoreEntityRepo<Entity, Id>, CacheRepo extends CacheableEntityRepo<Entity, Id>> EntityManager(
             StoreRepo storeEntityRepo,
@@ -61,6 +67,7 @@ public abstract class EntityManager<View extends EntityView<Id>, Entity extends 
     private void setDefaultFields(Entity entity, Date time) {
         if (entity.getCreatedOn() == null) entity.setCreatedOn(time);
         entity.setUpdatedOn(time);
+        if (entity.getAppId() == null || entity.getAppId().compareTo(0L) == 0) entity.setAppId(AppId.next());
     }
 
     public Optional<Entity> beforeSave(Optional<Entity> entity) {
@@ -126,7 +133,7 @@ public abstract class EntityManager<View extends EntityView<Id>, Entity extends 
     @Override
     public View findByAppId(Long appId) {
         log.debug(LOG_TEMPLATE, FIND_BY_APPID, appId);
-        return transformEntity(operateFirst(appId, (r, i) -> Optional.ofNullable(r.findByAppId(i)))).orElse(null);
+        return transformEntity(operateFirst(appId, (r, i) -> r.findByAppId(i))).orElse(null);
     }
 
     @Override
@@ -148,6 +155,18 @@ public abstract class EntityManager<View extends EntityView<Id>, Entity extends 
     public PagedData<View> find(PageContext context) {
         log.debug(LOG_TEMPLATE, FIND_ALL, context);
         return transformEntityPage(operateFirst(context, (r, c) -> r.findAll(c)));
+    }
+
+    public List<View> find(List<Id> ids) {
+        log.debug(LOG_TEMPLATE, FIND_ALL_BY_ID, ids);
+        List<Entity> entities = operateFirst(ids, (r, idList) -> r.findByIdIn(idList));
+        return entities == null ? List.of() :
+                entities.stream()
+                        .map(Optional::ofNullable)
+                        .map(this::transformEntity)
+                        .filter(Optional::isPresent)
+                        .map(Optional::get)
+                        .collect(Collectors.toList());
     }
 
     public PagedData<View> find(Predicate predicate, PageContext pageContext) {

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Date;
 import java.util.Objects;
 
-public abstract class RelationshipView<Aside,Bside> implements EntityView<Long> {
+public abstract class RelationshipView<Aside,Bside> extends TypicalEntityView<Long> {
 
     private Date createdOn;
     private Date updatedOn;
@@ -35,56 +35,6 @@ public abstract class RelationshipView<Aside,Bside> implements EntityView<Long> 
     @Override
     public void setId(Long relationshipId) {
         this.relationshipId = relationshipId;
-    }
-
-    @Override
-    public boolean isActive() {
-        return active;
-    }
-
-    @Override
-    public Date getCreatedOn() {
-        return createdOn;
-    }
-
-    @Override
-    public void setCreatedOn(Date createdOn) {
-        this.createdOn = createdOn;
-    }
-
-    @Override
-    public Date getUpdatedOn() {
-        return updatedOn;
-    }
-
-    @Override
-    public void setUpdatedOn(Date updatedOn) {
-        this.updatedOn = updatedOn;
-    }
-
-    @Override
-    public Long getAppId() {
-        return appId;
-    }
-
-    @Override
-    public void setAppId(Long appId) {
-        this.appId = appId;
-    }
-
-    @Override
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-    @Override @JsonIgnore
-    public boolean isValidated() {
-        return validated;
-    }
-
-    @Override
-    public void setValidated(boolean validated) {
-        this.validated = validated;
     }
 
     public Long getRelationshipId() {

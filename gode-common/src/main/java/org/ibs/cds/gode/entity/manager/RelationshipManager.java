@@ -13,9 +13,8 @@ import java.util.Optional;
 
 public interface RelationshipManager<A extends TypicalEntity<aid>,B extends TypicalEntity<bid>,RelationView extends RelationshipView<A,B>,Relation extends Relationship<aid,bid>,aid extends Serializable,bid extends Serializable> {
 
-    RelationView transformProperties(Relation relation);
-
-    Relation transformProperties(RelationView relationship);
+    RelationView transformRelationshipFields(Relation relation);
+    Relation transformRelationshipFields(RelationView relationship);
 
     Pair<A,B> findAsideAndBside(Relation relation);
 
@@ -25,22 +24,22 @@ public interface RelationshipManager<A extends TypicalEntity<aid>,B extends Typi
 
     ValidationStatus relationshipValidation(RelationView view);
 
-    default RelationView transform(Relation relation){
-        RelationView view = transformProperties(relation);
+    default RelationView transformRelation(Relation relation){
+        RelationView view = transformRelationshipFields(relation);
         view.setActive(relation.isActive());
         view.setRelationshipId(relation.getRelationshipId());
         view.setAppId(relation.getAppId());
         view.setCreatedOn(relation.getCreatedOn());
         view.setUpdatedOn(relation.getUpdatedOn());
         view.setValidated(relation.isValidated());
-        var triple =findAsideAndBside(relation);
-        view.setAside(triple.getLeft());
-        view.setBside(triple.getRight());
+        var pair =findAsideAndBside(relation);
+        view.setAside(pair.getLeft());
+        view.setBside(pair.getRight());
         return view;
     }
 
-    default Relation transform(RelationView view){
-        Relation relationship = transformProperties(view);
+    default Relation transformRelationView(RelationView view){
+        Relation relationship = transformRelationshipFields(view);
         relationship.setActive(view.isActive());
         relationship.setRelationshipId(view.getRelationshipId());
         relationship.setAppId(view.getAppId());
@@ -48,9 +47,9 @@ public interface RelationshipManager<A extends TypicalEntity<aid>,B extends Typi
         relationship.setUpdatedOn(view.getUpdatedOn());
         relationship.setValidated(view.isValidated());
         try {
-            var triple = findAsideAndBside(view);
-            relationship.setAid(triple.getLeft());
-            relationship.setBid(triple.getRight());
+            var pair = findAsideAndBside(view);
+            relationship.setAid(pair.getLeft());
+            relationship.setBid(pair.getRight());
             return relationship;
         }catch (Exception e){
             throw KnownException.RELATIVE_NOT_FOUND_EXCEPTION.provide(e, "Relative entity id cannot be empty");
@@ -60,13 +59,13 @@ public interface RelationshipManager<A extends TypicalEntity<aid>,B extends Typi
 
     default Optional<RelationView> transformRelation(Optional<Relation> relationOptional) {
         return relationOptional
-                .map(this::transform)
+                .map(this::transformRelation)
                 .filter(view->view.getAside() != null & view.getBside() !=null);
     }
 
 
     default Optional<Relation> transformRelationView(Optional<RelationView> relationViewOptional) {
-        return relationViewOptional.map(this::transform);
+        return relationViewOptional.map(this::transformRelationView);
     }
 
     RelationshipType type();

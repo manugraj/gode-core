@@ -13,6 +13,7 @@ import org.ibs.cds.gode.pagination.PagedData;
 import org.ibs.cds.gode.util.APIArgument;
 import org.ibs.cds.gode.web.Request;
 import org.ibs.cds.gode.web.Response;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,15 +29,21 @@ public abstract class ManyToAnyREndpoint<View extends RelationshipView<A,B>, Ent
         this.manager = manager;
     }
 
-    public Response<PagedData<View>> findRelationshipTo(@RequestBody Request<A> asideRequest, @ModelAttribute APIArgument argument){
+    @PostMapping(path="/from")
+    @ApiOperation("Find relationship from entity")
+    public Response<PagedData<View>> findRelationshipFrom(@RequestBody Request<A> asideRequest, @ModelAttribute APIArgument argument){
         return Executor.run((Request<A> a)->(ManyToAnyRManager<View, Entity, A,B,aid,bid> m)->m.findRelationshipFrom(a.getData(), PageContext.fromAPI(argument)), asideRequest ,manager, KnownException.QUERY_FAILED, "/from");
     }
 
-    public Response<PagedData<View>> findRelationshipFrom(@RequestBody Request<B> bsideRequest, @ModelAttribute APIArgument argument){
+    @PostMapping(path="/to")
+    @ApiOperation("Find relationship to entity")
+    public Response<PagedData<View>> findRelationshipTo(@RequestBody Request<B> bsideRequest, @ModelAttribute APIArgument argument){
         return Executor.run((Request<B> a)->(ManyToAnyRManager<View, Entity, A,B,aid,bid> m)->m.findRelationshipTo(a.getData(), PageContext.fromAPI(argument)), bsideRequest ,manager, KnownException.QUERY_FAILED, "/to");
     }
 
-    public Response<View> findAnyRelationship(@RequestBody Request<AB<A,B>> absideRequest){
+    @PostMapping(path="/between")
+    @ApiOperation("Find relationship between entities")
+    public Response<View> findRelationship(@RequestBody Request<AB<A,B>> absideRequest){
         return Executor.run((Request<AB<A,B>> a)->(ManyToAnyRManager<View, Entity, A,B,aid,bid> m)->m.findRelationship(a.getData().getA(), a.getData().getB()), absideRequest ,manager, KnownException.QUERY_FAILED, "/relation");
     }
 }

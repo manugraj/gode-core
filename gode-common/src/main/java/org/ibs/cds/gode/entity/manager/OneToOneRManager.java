@@ -8,7 +8,6 @@ import org.ibs.cds.gode.entity.view.RelationshipView;
 import org.ibs.cds.gode.util.Assert;
 
 import java.io.Serializable;
-import java.util.Optional;
 
 public abstract class OneToOneRManager<RelationView extends RelationshipView<A, B>,
         Relation extends Relationship<aid, bid>,

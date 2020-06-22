@@ -17,9 +17,17 @@ public interface StateEntityManagerOperation<View extends EntityView<Id>, Entity
 
     View find(Id id);
 
-    Optional<View> transformEntity(Optional<Entity> entity);
+    View transformFields(Entity entity);
 
-    Optional<Entity> transformView(Optional<View> entity);
+    Entity transformFields(View View);
+
+   default Optional<View> transformEntity(Optional<Entity> entityOpts){
+       return entityOpts.map(this::transform);
+   };
+
+    default Optional<Entity> transformView(Optional<View> viewOpts){
+        return viewOpts.map(this::transform);
+    };
 
     default ValidationStatus validateEntity(Entity entity){
         return ValidationStatus.ok();
@@ -35,4 +43,24 @@ public interface StateEntityManagerOperation<View extends EntityView<Id>, Entity
         return new PagedData(pagedData.stream().map(Optional::ofNullable).map(this::transformView).collect(Collectors.toList()), pagedData.getContext());
     }
 
+    default View transform(Entity entity){
+        View view =transformFields(entity);
+        view.setValidated(entity.isValidated());
+        view.setActive(entity.isActive());
+        view.setAppId(entity.getAppId());
+        view.setId(entity.getId());
+        view.setCreatedOn(entity.getCreatedOn());
+        view.setUpdatedOn(entity.getUpdatedOn());
+        return view;
+    }
+
+    default Entity transform(View view){
+        Entity entity=transformFields(view);
+        entity.setActive(view.isActive());
+        entity.setAppId(view.getAppId());
+        entity.setId(view.getId());
+        entity.setCreatedOn(view.getCreatedOn());
+        entity.setUpdatedOn(view.getUpdatedOn());
+        return entity;
+    }
 }

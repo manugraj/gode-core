@@ -11,13 +11,13 @@ import org.ibs.cds.gode.pagination.PageContext;
 import org.ibs.cds.gode.pagination.PagedData;
 
 import java.io.Serializable;
-import java.util.Optional;
 
-public class GraphQueryManager<Manager extends EntityManager<View,Entity,Id>,View extends EntityView<Id>,Entity extends TypicalEntity<Id>,Id extends Serializable>
-        implements GraphQLQueryResolver, GraphQLMutationResolver, StateEntityManagerOperation<View, Entity,Id> {
+public class GraphQueryManager<Manager extends EntityManager<View, Entity, Id>, View extends EntityView<Id>, Entity extends TypicalEntity<Id>, Id extends Serializable>
+        implements GraphQLQueryResolver, GraphQLMutationResolver, StateEntityManagerOperation<View, Entity, Id> {
 
     private Manager manager;
-    public GraphQueryManager(Manager manager){
+
+    public GraphQueryManager(Manager manager) {
         this.manager = manager;
     }
 
@@ -37,13 +37,13 @@ public class GraphQueryManager<Manager extends EntityManager<View,Entity,Id>,Vie
     }
 
     @Override
-    public Optional<View> transformEntity(Optional<Entity> entity) {
-        return manager.transformEntity(entity);
+    public View transformFields(Entity entity) {
+        return manager.transformFields(entity);
     }
 
     @Override
-    public Optional<Entity> transformView(Optional<View> entity) {
-        return manager.transformView(entity);
+    public Entity transformFields(View view) {
+        return manager.transformFields(view);
     }
 
     @Override

@@ -28,15 +28,21 @@ public abstract class OneToManyREndpoint<View extends RelationshipView<A,B>, Ent
         this.manager = manager;
     }
 
-    public Response<PagedData<View>> findRelationshipTo(@RequestBody Request<A> asideRequest, @ModelAttribute APIArgument argument){
+    @PostMapping(path="/from")
+    @ApiOperation("Find relationship from entity")
+    public Response<PagedData<View>> findRelationshipFrom(@RequestBody Request<A> asideRequest, @ModelAttribute APIArgument argument){
         return Executor.run((Request<A> a)->(OneToManyRManager<View, Entity, A,B,aid,bid> m)->m.findRelationshipFrom(a.getData(), PageContext.fromAPI(argument)), asideRequest ,manager, KnownException.QUERY_FAILED, "/from");
     }
 
-    public Response<View> findRelationshipFrom(@RequestBody Request<B> bsideRequest){
+    @PostMapping(path="/to")
+    @ApiOperation("Find relationship to entity")
+    public Response<View> findRelationshipTo(@RequestBody Request<B> bsideRequest){
         return Executor.run((Request<B> a)->(OneToManyRManager<View, Entity, A,B,aid,bid> m)->m.findRelationshipTo(a.getData()), bsideRequest ,manager, KnownException.QUERY_FAILED, "/to");
     }
 
-    public Response<View> findAnyRelationship(@RequestBody Request<AB<A,B>> absideRequest){
+    @PostMapping(path="/between")
+    @ApiOperation("Find relationship between entities")
+    public Response<View> findRelationship(@RequestBody Request<AB<A,B>> absideRequest){
         return Executor.run((Request<AB<A,B>> a)->(OneToManyRManager<View, Entity, A,B,aid,bid> m)->m.findRelationship(a.getData().getA(), a.getData().getB()), absideRequest ,manager, KnownException.QUERY_FAILED, "/relation");
     }
 }

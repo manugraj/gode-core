@@ -36,6 +36,16 @@ public abstract class AbstractRelationshipManager<RelationView extends Relations
     }
 
     @Override
+    public RelationView transformRelationshipFields(Relation relation) {
+        return this.transformFields(relation);
+    }
+
+    @Override
+    public Relation transformRelationshipFields(RelationView relationship) {
+        return this.transformFields(relationship);
+    }
+
+    @Override
     public Pair<A, B> findAsideAndBside(Relation relation) {
         return Pair.of(asideEntityManager.find(relation.getAid()), bsideEntityManager.find(relation.getBid()));
     }
@@ -65,6 +75,9 @@ public abstract class AbstractRelationshipManager<RelationView extends Relations
         }
         return relationshipIntegrityValidation(asideAndBside);
     }
+
+    @Override
+    public abstract RelationshipType type() ;
 
     @NotNull
     private ValidationStatus noRelativeDetails(String s) {

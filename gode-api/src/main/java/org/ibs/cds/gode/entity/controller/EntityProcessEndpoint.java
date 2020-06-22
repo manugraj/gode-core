@@ -1,5 +1,6 @@
 package org.ibs.cds.gode.entity.controller;
 
+import io.swagger.annotations.ApiOperation;
 import org.ibs.cds.gode.entity.generic.DataMap;
 import org.ibs.cds.gode.entity.manager.EntityViewManager;
 import org.ibs.cds.gode.entity.operation.Executor;
@@ -10,6 +11,8 @@ import org.ibs.cds.gode.exception.KnownException;
 import org.ibs.cds.gode.web.Request;
 import org.ibs.cds.gode.web.Response;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.io.Serializable;
 
@@ -22,11 +25,15 @@ public abstract class EntityProcessEndpoint<View extends EntityView<Id>, Manager
         this.manager = manager;
     }
 
-    public Response<ValidationStatus> validate(Request<View> request, String url) {
+    @PostMapping(path="/validate")
+    @ApiOperation("Validate entity")
+    public Response<ValidationStatus> validate(@RequestBody Request<View> request, String url) {
         return Executor.run(Logic.validate(), request, manager, KnownException.ENTITY_VALIDATIONS_FAILED, url);
     }
 
-    public Response<DataMap> process(Request<View> request, String url) {
+    @PostMapping(path="/process")
+    @ApiOperation("Process entity")
+    public Response<DataMap> process(@RequestBody Request<View> request, String url) {
         return Executor.run(Logic.process(), request, manager, KnownException.ENTITY_OPERATION_FAILED, url);
     }
 }

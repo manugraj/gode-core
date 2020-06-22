@@ -18,4 +18,9 @@ public class JavaArtifact {
                 packageName.concat(".").concat(name) :
                 name;
     }
+
+
+    public static JavaArtifact of(String name, String packageName){
+        return new JavaArtifact(name, packageName);
+    }
 }

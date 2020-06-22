@@ -1,6 +1,5 @@
 package org.ibs.cds.gode.entity.controller;
 
-import io.swagger.annotations.ApiOperation;
 import org.ibs.cds.gode.entity.generic.AB;
 import org.ibs.cds.gode.entity.manager.OneToOneRManager;
 import org.ibs.cds.gode.entity.operation.Executor;
@@ -10,7 +9,6 @@ import org.ibs.cds.gode.entity.view.RelationshipView;
 import org.ibs.cds.gode.exception.KnownException;
 import org.ibs.cds.gode.web.Request;
 import org.ibs.cds.gode.web.Response;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.io.Serializable;

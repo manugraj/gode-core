@@ -8,8 +8,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RelationshipEssential {
+    private JavaArtifact manager;
     private JavaArtifact repo;
     private JavaArtifact repository;
-    private JavaArtifact managerType;
-    private JavaArtifact endPointType;
+    private JavaArtifact controller;
+    private JavaArtifact entityType;
 }

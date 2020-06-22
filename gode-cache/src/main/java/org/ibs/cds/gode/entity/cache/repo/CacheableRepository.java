@@ -22,7 +22,7 @@ public abstract class CacheableRepository<Entity extends CacheableEntity<Id>, Id
 
     @Override
     public Optional<Entity> findById(Id id) {
-        return this.repo.findById(id);
+        return this.repo.findById(id).filter(CacheableEntity::isActive);
     }
 
     @Override
@@ -38,6 +38,6 @@ public abstract class CacheableRepository<Entity extends CacheableEntity<Id>, Id
     @Override
     public List<Entity> findByIdIn(List<Id> id) {
         return CollectionUtils.isEmpty(id) ? Collections.emptyList()
-                : StreamUtils.toList(repo.findAllById(() -> id.iterator()));
+                : StreamUtils.toList(repo.findAllById(() -> id.iterator()), CacheableEntity::isActive);
     }
 }

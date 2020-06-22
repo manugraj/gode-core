@@ -24,40 +24,45 @@ import java.io.Serializable;
 public class EntityStateEndPoint<View extends EntityView<Id>, Entity extends TypicalEntity<Id>, Manager extends EntityManager<View, Entity, Id>, Id extends Serializable>
         extends EntityProcessEndpoint<View, Manager, Id> {
 
+    private static final String SAVE = "/save";
+    private static final String DEACTIVATE = "/deactivate";
+    private static final String FIND = "/find";
+    private static final String FIND_ALL = "/findAll";
+    private static final String FIND_ALL_WHERE = "/findAll/where";
     protected Manager manager;
     public EntityStateEndPoint(Manager manager) {
         super(manager);
         this.manager = manager;
     }
 
-    @PostMapping(path="/save")
+    @PostMapping(path= SAVE)
     @ApiOperation("Create/Update entity")
-    public Response<View> save(@RequestBody Request<View> request, String url) {
-        return Executor.run(Logic.save(), request, manager, KnownException.SAVE_FAILED, url);
+    public Response<View> save(@RequestBody Request<View> request) {
+        return Executor.run(Logic.save(), request, manager, KnownException.SAVE_FAILED, SAVE);
     }
 
-    @PostMapping(path="/deactivate")
+    @PostMapping(path= DEACTIVATE)
     @ApiOperation("Deactivate entity")
-    public Response<Boolean> deactivate(@RequestBody Request<Id> request, String url) {
-        return Executor.run(Logic.deactivate(), request, manager, KnownException.SAVE_FAILED, url);
+    public Response<Boolean> deactivate(@RequestBody Request<Id> request) {
+        return Executor.run(Logic.deactivate(), request, manager, KnownException.SAVE_FAILED, DEACTIVATE);
     }
 
-    @GetMapping(path="/find")
+    @GetMapping(path= FIND)
     @ApiOperation("Find entity by id")
-    public Response<View> find(Id request, String url) {
-        return Executor.run(Logic.findById(), request, manager, KnownException.QUERY_FAILED, url);
+    public Response<View> find(Id request) {
+        return Executor.run(Logic.findById(), request, manager, KnownException.QUERY_FAILED, FIND);
     }
 
-    @GetMapping(path="/findAll")
+    @GetMapping(path= FIND_ALL)
     @ApiOperation("Find all entity instances")
-    public Response<PagedData<View>> findAll(@ModelAttribute APIArgument argument, String url) {
-        return Executor.run(Logic.findAll0(), PageContext.fromAPI(argument), manager, KnownException.QUERY_FAILED, url);
+    public Response<PagedData<View>> findAll(@ModelAttribute APIArgument argument) {
+        return Executor.run(Logic.findAll0(), PageContext.fromAPI(argument), manager, KnownException.QUERY_FAILED, FIND_ALL);
     }
 
-    @GetMapping(path="/findAll/where")
+    @GetMapping(path= FIND_ALL_WHERE)
     @ApiOperation("Find all entity instances dynamically")
-    public Response<PagedData<View>> findAllByPredicate(@QuerydslPredicate Predicate predicate, @ModelAttribute APIArgument argument, String url) {
-        return Executor.run(Logic.findAllByPredicate0(), PageContext.fromAPI(argument), predicate, manager, KnownException.QUERY_FAILED, url);
+    public Response<PagedData<View>> findAllByPredicate(@QuerydslPredicate Predicate predicate, @ModelAttribute APIArgument argument) {
+        return Executor.run(Logic.findAllByPredicate0(), PageContext.fromAPI(argument), predicate, manager, KnownException.QUERY_FAILED, FIND_ALL_WHERE);
     }
 
 }

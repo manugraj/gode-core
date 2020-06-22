@@ -19,21 +19,23 @@ import java.io.Serializable;
 @Controller
 public abstract class EntityProcessEndpoint<View extends EntityView<Id>, Manager extends EntityViewManager<View, Id>, Id extends Serializable> {
 
+    private static final String VALIDATE = "/validate";
+    private static final String PROCESS = "/process";
     private Manager manager;
 
     public EntityProcessEndpoint(Manager manager) {
         this.manager = manager;
     }
 
-    @PostMapping(path="/validate")
+    @PostMapping(path= VALIDATE)
     @ApiOperation("Validate entity")
-    public Response<ValidationStatus> validate(@RequestBody Request<View> request, String url) {
-        return Executor.run(Logic.validate(), request, manager, KnownException.ENTITY_VALIDATIONS_FAILED, url);
+    public Response<ValidationStatus> validate(@RequestBody Request<View> request) {
+        return Executor.run(Logic.validate(), request, manager, KnownException.ENTITY_VALIDATIONS_FAILED, VALIDATE);
     }
 
-    @PostMapping(path="/process")
+    @PostMapping(path= PROCESS)
     @ApiOperation("Process entity")
-    public Response<DataMap> process(@RequestBody Request<View> request, String url) {
-        return Executor.run(Logic.process(), request, manager, KnownException.ENTITY_OPERATION_FAILED, url);
+    public Response<DataMap> process(@RequestBody Request<View> request) {
+        return Executor.run(Logic.process(), request, manager, KnownException.ENTITY_OPERATION_FAILED, PROCESS);
     }
 }
